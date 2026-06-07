@@ -11,25 +11,25 @@
             font-family: "SimSun", "Times New Roman", serif;
         }
         body {
-            background: linear-gradient(to bottom, #050510, #101030, #050510);
+            background: #050510;
             cursor: grab;
             user-select: none;
         }
         body:active { cursor: grabbing; }
         canvas { display: block; position: fixed; top: 0; left: 0; }
         #details-panel {
-            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
-            width: 340px; max-width: 40vw; max-height: 85vh;
-            background: rgba(5, 5, 20, 0.9);
+            position: fixed; left: 30px; top: 50%; transform: translateY(-50%);
+            width: 340px; max-width: 38vw; max-height: 85vh;
+            background: rgba(5, 5, 20, 0.92);
             border: 2px solid rgba(255, 215, 100, 0.6);
             border-radius: 12px; padding: 25px;
             color: #ffd764; opacity: 0; pointer-events: none;
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            transition: opacity 0.4s ease;
             overflow-y: auto; z-index: 100;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 0 40px rgba(255, 215, 100, 0.25), inset 0 0 60px rgba(255, 215, 100, 0.05);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 50px rgba(255, 215, 100, 0.3), inset 0 0 80px rgba(255, 215, 100, 0.03);
         }
-        #details-panel.visible { opacity: 1; pointer-events: auto; transform: translateY(-50%) scale(1); }
+        #details-panel.visible { opacity: 1; pointer-events: auto; }
         #details-panel h1 { font-size: 26px; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255, 215, 100, 0.6); }
         #details-panel h2 { font-size: 18px; margin-bottom: 12px; color: #fff; font-family: "Times New Roman", serif; font-style: italic; }
         #details-panel .symbol { font-size: 44px; margin: 12px 0; text-align: center; text-shadow: 0 0 25px rgba(255, 215, 100, 0.9); }
@@ -62,7 +62,6 @@
         }
         @media (max-width: 768px) {
             #details-panel { width: calc(100% - 40px); max-width: none; left: 20px; right: 20px; top: auto; bottom: 20px; transform: none; max-height: 45vh; }
-            #details-panel.visible { transform: none; }
             #title { font-size: 22px; }
             #subtitle { font-size: 13px; top: 58px; }
         }
@@ -153,11 +152,15 @@
         let W, H;
         let stars = [];
         let milkyWayOffset = 0;
-        let rotation = 0;
-        let targetRotation = 0;
-        let rotationVelocity = 0;
+        let rotationX = 0;
+        let rotationY = 0;
+        let targetRotX = 0;
+        let targetRotY = 0;
+        let rotationVelocityX = 0;
+        let rotationVelocityY = 0;
         let isDragging = false;
-        let lastMouseX = 0;
+        let lastX = 0;
+        let lastY = 0;
         let selectedConstellation = null;
         let scale = 1;
         let targetScale = 1;
@@ -182,7 +185,7 @@
                     x: Math.random() * W,
                     y: Math.random() * H,
                     size: Math.random() * 2.5 + 0.5,
-                    baseAlpha: Math.random() * 0.4 + 0.2,
+                    baseAlpha: Math.random() * 0.5 + 0.3,
                     phase: Math.random() * Math.PI * 2,
                     speed: Math.random() * 0.03 + 0.01,
                     twinkleSpeed: Math.random() * 0.05 + 0.02
@@ -194,38 +197,53 @@
             bgCtx.fillStyle = '#050510';
             bgCtx.fillRect(0, 0, W, H);
 
-            const gradient = bgCtx.createLinearGradient(
-                milkyWayOffset - W * 0.6, H * 0.3,
-                milkyWayOffset + W * 1.6, H * 0.7
-            );
-            gradient.addColorStop(0, 'rgba(20, 15, 40, 0)');
-            gradient.addColorStop(0.2, 'rgba(40, 25, 70, 0.5)');
-            gradient.addColorStop(0.4, 'rgba(70, 45, 120, 0.7)');
-            gradient.addColorStop(0.5, 'rgba(90, 55, 140, 0.8)');
-            gradient.addColorStop(0.6, 'rgba(70, 45, 120, 0.7)');
-            gradient.addColorStop(0.8, 'rgba(40, 25, 70, 0.5)');
-            gradient.addColorStop(1, 'rgba(20, 15, 40, 0)');
+            // Draw Milky Way
+            const centerX = (milkyWayOffset + W * 0.3) % (W * 1.5) - W * 0.3;
+            const centerY = H * 0.4;
 
-            bgCtx.fillStyle = gradient;
+            const milkyGradient = bgCtx.createRadialGradient(
+                centerX, centerY, 0,
+                centerX, centerY, W * 0.8
+            );
+            milkyGradient.addColorStop(0, 'rgba(120, 80, 180, 0.8)');
+            milkyGradient.addColorStop(0.2, 'rgba(80, 50, 140, 0.6)');
+            milkyGradient.addColorStop(0.4, 'rgba(50, 30, 100, 0.4)');
+            milkyGradient.addColorStop(0.6, 'rgba(30, 20, 70, 0.3)');
+            milkyGradient.addColorStop(0.8, 'rgba(20, 15, 50, 0.2)');
+            milkyGradient.addColorStop(1, 'rgba(5, 5, 16, 0)');
+
+            bgCtx.fillStyle = milkyGradient;
             bgCtx.fillRect(0, 0, W, H);
 
-            milkyWayOffset += 0.3;
-            if (milkyWayOffset > W) milkyWayOffset = 0;
+            // Additional galaxy bands
+            for (let i = 0; i < 3; i++) {
+                const bandY = centerY + (i - 1) * H * 0.15;
+                const bandGradient = bgCtx.createLinearGradient(0, bandY - H * 0.1, 0, bandY + H * 0.1);
+                bandGradient.addColorStop(0, 'rgba(60, 40, 120, 0)');
+                bandGradient.addColorStop(0.5, `rgba(80, 50, 160, ${0.15 - i * 0.03})`);
+                bandGradient.addColorStop(1, 'rgba(60, 40, 120, 0)');
+                bgCtx.fillStyle = bandGradient;
+                bgCtx.fillRect(0, bandY - H * 0.1, W, H * 0.2);
+            }
 
+            milkyWayOffset += 0.5;
+            if (milkyWayOffset > W * 0.8) milkyWayOffset = 0;
+
+            // Draw stars
             stars.forEach(star => {
                 const twinkle = Math.sin(animationTime * star.twinkleSpeed + star.phase);
-                const alpha = star.baseAlpha + twinkle * 0.25;
-                const size = star.size * (1 + twinkle * 0.1);
+                const alpha = star.baseAlpha + twinkle * 0.3;
+                const size = star.size * (1 + twinkle * 0.15);
 
                 const glowGradient = bgCtx.createRadialGradient(
-                    star.x, star.y, 0, star.x, star.y, size * 3
+                    star.x, star.y, 0, star.x, star.y, size * 4
                 );
                 glowGradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
-                glowGradient.addColorStop(0.3, `rgba(200, 200, 255, ${alpha * 0.5})`);
+                glowGradient.addColorStop(0.3, `rgba(220, 220, 255, ${alpha * 0.5})`);
                 glowGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
                 bgCtx.beginPath();
-                bgCtx.arc(star.x, star.y, size * 3, 0, Math.PI * 2);
+                bgCtx.arc(star.x, star.y, size * 4, 0, Math.PI * 2);
                 bgCtx.fillStyle = glowGradient;
                 bgCtx.fill();
 
@@ -237,39 +255,51 @@
         }
 
         function project3D(x, y, z) {
-            const cos = Math.cos(rotation);
-            const sin = Math.sin(rotation);
-            const newX = x * cos - z * sin;
-            const newZ = x * sin + z * cos;
+            // Apply X rotation (tilt towards screen)
+            const cosX = Math.cos(rotationX);
+            const sinX = Math.sin(rotationX);
+            const y1 = y * cosX - z * sinX;
+            const z1 = y * sinX + z * cosX;
 
-            const fov = 500;
-            const scale3D = fov / (fov + newZ);
+            // Apply Y rotation (spin)
+            const cosY = Math.cos(rotationY);
+            const sinY = Math.sin(rotationY);
+            const x1 = x * cosY - z1 * sinY;
+            const z2 = x * sinY + z1 * cosY;
+
+            const fov = 600;
+            const scale3D = fov / (fov + z2);
+
+            // Offset to the right
+            const offsetX = W * 0.15;
 
             return {
-                x: W / 2 + newX * scale3D,
-                y: H / 2 + y * scale3D * 0.7,
+                x: W / 2 + x1 * scale3D + offsetX,
+                y: H / 2 + y1 * scale3D * 0.8,
                 scale: scale3D,
-                z: newZ
+                z: z2
             };
         }
 
         function drawConstellation(constellation, baseAngle, isSelected) {
-            const radius = Math.min(W, H) * 0.38;
+            const radius = Math.min(W, H) * 0.32;
             const x = Math.cos(baseAngle) * radius;
             const z = Math.sin(baseAngle) * radius;
+            const y = 0;
 
-            const proj = project3D(x, 0, z);
+            const proj = project3D(x, y, z);
 
-            if (proj.z < -350) return null;
+            // Make all constellations visible
+            const visible = true;
 
             const scaleMultiplier = isSelected ? scale : 1;
             const finalScale = proj.scale * scaleMultiplier;
 
-            const constellationSize = 35 * finalScale;
-            const textSize = 13 * finalScale;
+            const constellationSize = 38 * finalScale;
+            const textSize = 14 * finalScale;
 
             const baseColor = isSelected ? 'rgba(255, 230, 120,' : 'rgba(255, 215, 100,';
-            const alpha = Math.min(0.9, finalScale * 0.85);
+            const alpha = Math.min(0.95, finalScale * 0.9);
 
             // Draw constellation pattern
             if (constellation.pattern && constellation.pattern.length > 0) {
@@ -283,8 +313,8 @@
                         mainCtx.lineTo(px, py);
                     }
                 });
-                mainCtx.strokeStyle = `${baseColor}${Math.min(0.6, alpha * 0.7)})`;
-                mainCtx.lineWidth = 2 * finalScale;
+                mainCtx.strokeStyle = `${baseColor}${Math.min(0.7, alpha * 0.8)})`;
+                mainCtx.lineWidth = 2.5 * finalScale;
                 mainCtx.stroke();
 
                 // Draw stars in pattern
@@ -292,16 +322,16 @@
                     const px = proj.x + pt[0] * constellationSize;
                     const py = proj.y + pt[1] * constellationSize;
                     const starInfo = constellation.stars[i];
-                    const starSize = starInfo ? Math.max(1.5, (4 - starInfo.mag * 0.5) * finalScale) : 2 * finalScale;
+                    const starSize = starInfo ? Math.max(2, (5 - starInfo.mag * 0.5) * finalScale) : 2.5 * finalScale;
 
                     // Glow effect
-                    const glowGradient = mainCtx.createRadialGradient(px, py, 0, px, py, starSize * 4);
+                    const glowGradient = mainCtx.createRadialGradient(px, py, 0, px, py, starSize * 5);
                     glowGradient.addColorStop(0, `${baseColor}1)`);
-                    glowGradient.addColorStop(0.3, `${baseColor}0.6)`);
+                    glowGradient.addColorStop(0.3, `${baseColor}0.7)`);
                     glowGradient.addColorStop(1, `${baseColor}0)`);
 
                     mainCtx.beginPath();
-                    mainCtx.arc(px, py, starSize * 4, 0, Math.PI * 2);
+                    mainCtx.arc(px, py, starSize * 5, 0, Math.PI * 2);
                     mainCtx.fillStyle = glowGradient;
                     mainCtx.fill();
 
@@ -314,25 +344,25 @@
             }
 
             // Draw labels
-            if (finalScale > 0.25) {
+            if (finalScale > 0.2) {
                 mainCtx.font = `${textSize}px SimSun`;
                 mainCtx.fillStyle = `${baseColor}${alpha})`;
                 mainCtx.textAlign = 'center';
-                mainCtx.fillText(constellation.nameCn, proj.x, proj.y + constellationSize * 1.8);
+                mainCtx.fillText(constellation.nameCn, proj.x, proj.y + constellationSize * 2);
 
                 mainCtx.font = `${textSize * 0.85}px Times New Roman`;
-                mainCtx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.8})`;
-                mainCtx.fillText(constellation.nameLat, proj.x, proj.y + constellationSize * 1.8 + textSize + 4);
+                mainCtx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.85})`;
+                mainCtx.fillText(constellation.nameLat, proj.x, proj.y + constellationSize * 2 + textSize + 5);
             }
 
             return {
                 id: constellation.id,
-                x: proj.x - constellationSize * 2,
-                y: proj.y - constellationSize * 1.5,
-                w: constellationSize * 4,
-                h: constellationSize * 3 + textSize * 2.5,
+                x: proj.x - constellationSize * 2.5,
+                y: proj.y - constellationSize * 2,
+                w: constellationSize * 5,
+                h: constellationSize * 4 + textSize * 3,
                 z: proj.z,
-                inFront: proj.z > -250
+                inFront: proj.z > -400
             };
         }
 
@@ -342,7 +372,7 @@
             // Sort constellations by Z depth
             const drawOrder = constellations.map((c, i) => {
                 const angle = (i / constellations.length) * Math.PI * 2 - Math.PI / 2;
-                const radius = Math.min(W, H) * 0.38;
+                const radius = Math.min(W, H) * 0.32;
                 const x = Math.cos(angle) * radius;
                 const z = Math.sin(angle) * radius;
                 const proj = project3D(x, 0, z);
@@ -372,12 +402,19 @@
 
             // Physics
             if (!isDragging) {
-                rotationVelocity *= 0.985;
-                targetRotation += rotationVelocity;
+                rotationVelocityX *= 0.985;
+                rotationVelocityY *= 0.985;
+                targetRotX += rotationVelocityX;
+                targetRotY += rotationVelocityY;
             }
 
+            // Clamp X rotation to avoid flipping
+            if (targetRotX > Math.PI * 0.4) targetRotX = Math.PI * 0.4;
+            if (targetRotX < -Math.PI * 0.4) targetRotX = -Math.PI * 0.4;
+
             // Smooth rotation interpolation
-            rotation += (targetRotation - rotation) * 0.08;
+            rotationX += (targetRotX - rotationX) * 0.08;
+            rotationY += (targetRotY - rotationY) * 0.08;
 
             // Scale animation
             if (selectedConstellation) {
@@ -395,15 +432,20 @@
 
         function handlePointerDown(e) {
             isDragging = true;
-            lastMouseX = e.clientX;
+            lastX = e.clientX;
+            lastY = e.clientY;
         }
 
         function handlePointerMove(e) {
             if (isDragging) {
-                const deltaX = e.clientX - lastMouseX;
-                rotationVelocity = deltaX * 0.006;
-                targetRotation += rotationVelocity;
-                lastMouseX = e.clientX;
+                const deltaX = e.clientX - lastX;
+                const deltaY = e.clientY - lastY;
+                rotationVelocityY = deltaX * 0.008;
+                rotationVelocityX = deltaY * 0.005;
+                targetRotY += rotationVelocityY;
+                targetRotX += rotationVelocityX;
+                lastX = e.clientX;
+                lastY = e.clientY;
             }
 
             // Hover effect
@@ -428,7 +470,7 @@
 
         function handleClick(e) {
             // Ignore click if still moving fast
-            if (Math.abs(rotationVelocity) > 0.005) return;
+            if (Math.abs(rotationVelocityY) > 0.008 || Math.abs(rotationVelocityX) > 0.006) return;
 
             const sortedAreas = [...currentHitAreas].sort((a, b) => b.z - a.z);
             for (const area of sortedAreas) {
@@ -448,7 +490,7 @@
             if (!data) return;
 
             selectedConstellation = id;
-            targetScale = 1.6;
+            targetScale = 1.7;
 
             detailsContent.innerHTML = `
                 <h1>${data.nameCn}</h1>
