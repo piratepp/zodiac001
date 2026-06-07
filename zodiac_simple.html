@@ -194,14 +194,14 @@
                     mainCtx.font = `${txt}px SimSun`;
                     mainCtx.fillStyle = color;
                     mainCtx.textAlign = 'center';
-                    mainCtx.fillText(item.d.nameCn, p.x, p.y + size * 2);
+                    mainCtx.fillText(d.nameCn, p.x, p.y + size * 2);
                     mainCtx.font = `${txt * 0.8}px Times New Roman`;
                     mainCtx.fillStyle = `rgba(255,255,255,${Math.min(0.8, s * 0.7)})`;
-                    mainCtx.fillText(item.d.nameLat, p.x, p.y + size * 2 + txt + 5);
+                    mainCtx.fillText(d.nameLat, p.x, p.y + size * 2 + txt + 5);
                 }
 
                 if (p.z > -300) {
-                    hitAreas.push({ id: item.d.id, x: p.x - size * 2, y: p.y - size * 2, w: size * 4, h: size * 4 + txt * 3, z: p.z });
+                    hitAreas.push({ id: d.id, x: p.x - size * 2, y: p.y - size * 2, w: size * 4, h: size * 4 + txt * 3, z: p.z });
                 }
             });
         }
