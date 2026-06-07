@@ -3,52 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>黄道十二星座 - 简化版</title>
+    <title>黄道十二星座</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #0a0a1a, #1a1a3a);
+        html, body {
+            width: 100%; height: 100%; overflow: hidden;
             font-family: "SimSun", "Times New Roman", serif;
-            color: #ffd764;
+        }
+        body {
+            background: linear-gradient(to bottom, #050510, #101030, #050510);
             cursor: grab;
+            user-select: none;
         }
         body:active { cursor: grabbing; }
         canvas { display: block; position: fixed; top: 0; left: 0; }
+        #details-panel {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 340px; max-width: 40vw; max-height: 85vh;
+            background: rgba(5, 5, 20, 0.9);
+            border: 2px solid rgba(255, 215, 100, 0.6);
+            border-radius: 12px; padding: 25px;
+            color: #ffd764; opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            overflow-y: auto; z-index: 100;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 40px rgba(255, 215, 100, 0.25), inset 0 0 60px rgba(255, 215, 100, 0.05);
+        }
+        #details-panel.visible { opacity: 1; pointer-events: auto; transform: translateY(-50%) scale(1); }
+        #details-panel h1 { font-size: 26px; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255, 215, 100, 0.6); }
+        #details-panel h2 { font-size: 18px; margin-bottom: 12px; color: #fff; font-family: "Times New Roman", serif; font-style: italic; }
+        #details-panel .symbol { font-size: 44px; margin: 12px 0; text-align: center; text-shadow: 0 0 25px rgba(255, 215, 100, 0.9); }
+        #details-panel .info-row { margin: 10px 0; padding: 8px 0; border-bottom: 1px solid rgba(255, 215, 100, 0.2); font-size: 14px; }
+        #details-panel .label { color: #fff; font-weight: bold; }
+        #details-panel .stars-section { margin: 15px 0; }
+        #details-panel .stars-section h3 { font-size: 15px; margin-bottom: 10px; color: #fff; }
+        #details-panel .stars-section ul { list-style: none; padding-left: 8px; }
+        #details-panel .stars-section li { padding: 6px 0; font-size: 13px; }
+        #details-panel .content-section { margin: 18px 0; }
+        #details-panel .content-section h3 { font-size: 15px; margin-bottom: 8px; color: #fff; }
+        #details-panel .content-section p { line-height: 1.7; font-size: 13px; }
+        #close-btn {
+            position: absolute; top: 10px; right: 12px;
+            background: rgba(255, 215, 100, 0.1); border: 1px solid rgba(255, 215, 100, 0.3);
+            color: #ffd764; font-size: 20px; cursor: pointer;
+            border-radius: 50%; width: 28px; height: 28px;
+            transition: all 0.3s;
+        }
+        #close-btn:hover { background: rgba(255, 215, 100, 0.2); transform: scale(1.1); }
         #title {
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
-            font-size: 32px; z-index: 50; pointer-events: none;
-            text-shadow: 0 0 20px rgba(255, 215, 100, 0.5);
+            position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
+            color: #ffd764; font-size: 30px; z-index: 50; pointer-events: none;
+            text-shadow: 0 0 25px rgba(255, 215, 100, 0.6);
         }
         #subtitle {
-            position: fixed; top: 75px; left: 50%; transform: translateX(-50%);
-            font-size: 16px; font-family: "Times New Roman", serif;
-            color: rgba(255, 215, 100, 0.7); z-index: 50; pointer-events: none;
+            position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
+            color: rgba(255, 215, 100, 0.7); font-size: 15px;
+            font-family: "Times New Roman", serif; z-index: 50; pointer-events: none;
         }
-        #panel {
-            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
-            width: 300px; background: rgba(10, 10, 30, 0.85);
-            border: 2px solid rgba(255, 215, 100, 0.5); border-radius: 15px;
-            padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.5s;
-            z-index: 100; max-height: 80vh; overflow-y: auto;
-            backdrop-filter: blur(10px);
-        }
-        #panel.visible { opacity: 1; pointer-events: auto; }
-        #panel h1 { font-size: 24px; margin-bottom: 5px; }
-        #panel h2 { font-size: 18px; color: #fff; font-family: "Times New Roman"; font-style: italic; margin-bottom: 15px; }
-        #panel .symbol { font-size: 40px; text-align: center; margin: 10px 0; text-shadow: 0 0 20px rgba(255, 215, 100, 0.8); }
-        #panel .row { margin: 8px 0; padding: 6px 0; border-bottom: 1px solid rgba(255, 215, 100, 0.2); }
-        #panel .label { color: #fff; font-weight: bold; }
-        #panel .section { margin: 15px 0; }
-        #panel .section h3 { font-size: 14px; color: #fff; margin-bottom: 8px; }
-        #panel .section p { font-size: 13px; line-height: 1.6; }
-        #close-btn { position: absolute; top: 8px; right: 12px; background: none; border: none; color: #ffd764; font-size: 20px; cursor: pointer; opacity: 0.7; }
-        #close-btn:hover { opacity: 1; }
         @media (max-width: 768px) {
-            #panel { width: calc(100% - 40px); left: 20px; right: 20px; top: auto; bottom: 20px; transform: none; max-height: 40vh; }
-            #title { font-size: 24px; }
+            #details-panel { width: calc(100% - 40px); max-width: none; left: 20px; right: 20px; top: auto; bottom: 20px; transform: none; max-height: 45vh; }
+            #details-panel.visible { transform: none; }
+            #title { font-size: 22px; }
+            #subtitle { font-size: 13px; top: 58px; }
         }
     </style>
 </head>
@@ -57,203 +73,440 @@
     <canvas id="mainCanvas"></canvas>
     <div id="title">黄道十二星座</div>
     <div id="subtitle">The Twelve Zodiac Constellations</div>
-    <div id="panel">
+    <div id="details-panel">
         <button id="close-btn">&times;</button>
-        <div id="content"></div>
+        <div id="details-content"></div>
     </div>
 
     <script>
-        const data = [
-            {id:'aries',nameCn:'白羊座',nameLat:'Aries',symbol:'♈',period:'3月21日 - 4月19日',element:'火象星座',planet:'火星',intro:'白羊座是黄道十二星座的第一个星座，代表新的开始和初生的力量。',meaning:'象征勇气、活力和开创性。'},
-            {id:'taurus',nameCn:'金牛座',nameLat:'Taurus',symbol:'♉',period:'4月20日 - 5月20日',element:'土象星座',planet:'金星',intro:'金牛座以公牛为象征，包含明亮的红巨星毕宿五。',meaning:'象征稳定、耐心和美感。'},
-            {id:'gemini',nameCn:'双子座',nameLat:'Gemini',symbol:'♊',period:'5月21日 - 6月21日',element:'风象星座',planet:'水星',intro:'双子座以双胞胎为象征，代表双重性格和多样性。',meaning:'象征沟通、智慧和适应性。'},
-            {id:'cancer',nameCn:'巨蟹座',nameLat:'Cancer',symbol:'♋',period:'6月22日 - 7月22日',element:'水象星座',planet:'月亮',intro:'巨蟹座以螃蟹为象征，包含著名的蜂巢星团。',meaning:'象征情感、家庭和保护。'},
-            {id:'leo',nameCn:'狮子座',nameLat:'Leo',symbol:'♌',period:'7月23日 - 8月22日',element:'火象星座',planet:'太阳',intro:'狮子座以狮子为象征，是夏季星空中最壮观的星座之一。',meaning:'象征领导力和自信。'},
-            {id:'virgo',nameCn:'处女座',nameLat:'Virgo',symbol:'♍',period:'8月23日 - 9月22日',element:'土象星座',planet:'水星',intro:'处女座以谷神为象征，是黄道十二星座中最大的星座。',meaning:'象征完美主义和实用性。'},
-            {id:'libra',nameCn:'天秤座',nameLat:'Libra',symbol:'♎',period:'9月23日 - 10月23日',element:'风象星座',planet:'金星',intro:'天秤座以天平为象征，是唯一以无生命物体为象征的黄道星座。',meaning:'象征平衡、和谐和公正。'},
-            {id:'scorpio',nameCn:'天蝎座',nameLat:'Scorpio',symbol:'♏',period:'10月24日 - 11月22日',element:'水象星座',planet:'冥王星',intro:'天蝎座以蝎子为象征，是夏季星空中最引人注目的星座之一。',meaning:'象征深度、热情和神秘。'},
-            {id:'sagittarius',nameCn:'射手座',nameLat:'Sagittarius',symbol:'♐',period:'11月23日 - 12月21日',element:'火象星座',planet:'木星',intro:'射手座以人马弓箭手为象征，指向银河中心。',meaning:'象征冒险、自由和乐观。'},
-            {id:'capricorn',nameCn:'摩羯座',nameLat:'Capricornus',symbol:'♑',period:'12月22日 - 1月19日',element:'土象星座',planet:'土星',intro:'摩羯座以海山羊为象征，是一个神话生物。',meaning:'象征自律、责任和坚韧。'},
-            {id:'aquarius',nameCn:'水瓶座',nameLat:'Aquarius',symbol:'♒',period:'1月20日 - 2月18日',element:'风象星座',planet:'天王星',intro:'水瓶座以持瓶人为象征，在希腊神话中与美少年伽倪墨得斯有关。',meaning:'象征创新、独立和理想主义。'},
-            {id:'pisces',nameCn:'双鱼座',nameLat:'Pisces',symbol:'♓',period:'2月19日 - 3月20日',element:'水象星座',planet:'海王星',intro:'双鱼座以两条鱼为象征，两条鱼被一条丝带系在一起。',meaning:'象征直觉、同情和灵性。'}
+        const constellations = [
+            {id:'aries',nameCn:'白羊座',nameLat:'Aries',symbol:'♈',period:'3月21日 - 4月19日',element:'火象',rulingPlanet:'火星',
+             stars:[{cn:'娄宿三',mag:2.0},{cn:'娄宿一',mag:2.6},{cn:'胃宿一',mag:3.6},{cn:'胃宿二',mag:4.5},{cn:'胃宿三',mag:4.6}],
+             pattern:[[0,0],[0.4,-0.2],[0.8,-0.1],[0.6,0.3],[1.0,0.2]],
+             intro:'白羊座是黄道十二星座之首，代表新生与力量。金羊毛传说使其成为勇气与冒险的象征。',
+             meaning:'象征勇气、进取、领导力和开创精神。'},
+            {id:'taurus',nameCn:'金牛座',nameLat:'Taurus',symbol:'♉',period:'4月20日 - 5月20日',element:'土象',rulingPlanet:'金星',
+             stars:[{cn:'毕宿五',mag:0.9},{cn:'五车五',mag:1.7},{cn:'天关',mag:2.9},{cn:'毕宿一',mag:3.2},{cn:'毕宿四',mag:3.8}],
+             pattern:[[0,0],[-0.5,0.3],[-0.2,0.8],[0.4,0.5],[0.8,0.2]],
+             intro:'金牛座以公牛为象征，毕宿五是其最亮的红巨星，在冬季星空中格外醒目。',
+             meaning:'象征稳健、务实、美感与坚持。'},
+            {id:'gemini',nameCn:'双子座',nameLat:'Gemini',symbol:'♊',period:'5月21日 - 6月21日',element:'风象',rulingPlanet:'水星',
+             stars:[{cn:'北河二',mag:1.6},{cn:'北河三',mag:1.1},{cn:'井宿三',mag:1.9},{cn:'井宿一',mag:3.0},{cn:'天樽二',mag:3.5}],
+             pattern:[[-0.4,-0.5],[-0.4,0.5],[0,0],[0.4,-0.5],[0.4,0.5]],
+             intro:'双子座以双胞胎为象征，北河二和北河三是其标志性的两颗亮星。',
+             meaning:'象征沟通、智慧、适应性和多才多艺。'},
+            {id:'cancer',nameCn:'巨蟹座',nameLat:'Cancer',symbol:'♋',period:'6月22日 - 7月22日',element:'水象',rulingPlanet:'月亮',
+             stars:[{cn:'柳宿增三',mag:3.5},{cn:'鬼宿四',mag:3.9},{cn:'鬼宿一',mag:4.0},{cn:'积尸气',mag:3.9},{cn:'鬼宿二',mag:4.2}],
+             pattern:[[0,0],[-0.3,0.4],[0.3,0.4],[-0.1,0.8],[0.1,0.8]],
+             intro:'巨蟹座以螃蟹为象征，蜂巢星团是其最著名的深空天体。',
+             meaning:'象征情感、保护、家庭和直觉。'},
+            {id:'leo',nameCn:'狮子座',nameLat:'Leo',symbol:'♌',period:'7月23日 - 8月22日',element:'火象',rulingPlanet:'太阳',
+             stars:[{cn:'轩辕十四',mag:1.4},{cn:'五帝座一',mag:2.0},{cn:'轩辕十二',mag:2.3},{cn:'轩辕九',mag:2.6},{cn:'轩辕十三',mag:2.9}],
+             pattern:[[0,0.8],[-0.3,0.3],[-0.6,0],[-0.3,-0.4],[0.3,0.2]],
+             intro:'狮子座是夏季星空中最壮观的星座，轩辕十四被誉为"王者之星"。',
+             meaning:'象征领导、自信、创造力和慷慨。'},
+            {id:'virgo',nameCn:'处女座',nameLat:'Virgo',symbol:'♍',period:'8月23日 - 9月22日',element:'土象',rulingPlanet:'水星',
+             stars:[{cn:'角宿一',mag:1.0},{cn:'东上相',mag:2.8},{cn:'角宿二',mag:3.4},{cn:'亢宿一',mag:4.0},{cn:'亢宿二',mag:4.5}],
+             pattern:[[0,0.8],[0,0.2],[0.4,0],[0.2,-0.5],[-0.2,-0.3]],
+             intro:'处女座是黄道中最大的星座，角宿一发出美丽的蓝白光芒。',
+             meaning:'象征完美、分析、服务和务实。'},
+            {id:'libra',nameCn:'天秤座',nameLat:'Libra',symbol:'♎',period:'9月23日 - 10月23日',element:'风象',rulingPlanet:'金星',
+             stars:[{cn:'氐宿一',mag:2.6},{cn:'氐宿四',mag:2.7},{cn:'氐宿三',mag:3.3},{cn:'氐宿增一',mag:4.0},{cn:'折威七',mag:3.9}],
+             pattern:[[-0.5,0.2],[0,0],[0.5,0.2],[0,0.6],[-0.5,0.8]],
+             intro:'天秤座是唯一以无生命物体为象征的黄道星座，代表公正与平衡。',
+             meaning:'象征和谐、审美、公正和外交。'},
+            {id:'scorpio',nameCn:'天蝎座',nameLat:'Scorpio',symbol:'♏',period:'10月24日 - 11月22日',element:'水象',rulingPlanet:'冥王星',
+             stars:[{cn:'心宿二',mag:1.1},{cn:'尾宿一',mag:1.6},{cn:'房宿三',mag:2.3},{cn:'尾宿八',mag:2.4},{cn:'心宿三',mag:2.8}],
+             pattern:[[0,0.7],[-0.3,0.4],[-0.6,0.1],[-0.4,-0.3],[0.2,-0.6]],
+             intro:'天蝎座以蝎子为象征，心宿二是其火红的红超巨星，极为壮观。',
+             meaning:'象征热情、神秘、深刻和转变。'},
+            {id:'sagittarius',nameCn:'射手座',nameLat:'Sagittarius',symbol:'♐',period:'11月23日 - 12月21日',element:'火象',rulingPlanet:'木星',
+             stars:[{cn:'箕宿三',mag:1.8},{cn:'斗宿六',mag:2.1},{cn:'斗宿五',mag:2.6},{cn:'建星一',mag:2.8},{cn:'建星六',mag:3.0}],
+             pattern:[[0.5,0.5],[0,0.2],[-0.4,0],[0,-0.5],[0.4,-0.3]],
+             intro:'射手座以弓箭手为象征，指向银河系中心，区域内星团星云密布。',
+             meaning:'象征探索、乐观、自由和哲学。'},
+            {id:'capricorn',nameCn:'摩羯座',nameLat:'Capricornus',symbol:'♑',period:'12月22日 - 1月19日',element:'土象',rulingPlanet:'土星',
+             stars:[{cn:'牛宿一',mag:3.0},{cn:'牛宿二',mag:3.1},{cn:'女宿一',mag:3.7},{cn:'垒壁阵四',mag:3.8},{cn:'牛宿增六',mag:4.0}],
+             pattern:[[0,0.6],[-0.3,0.3],[-0.6,0],[-0.3,-0.4],[0.1,-0.2]],
+             intro:'摩羯座以海山羊为象征，是古老而神秘的星座。',
+             meaning:'象征耐心、责任、纪律和抱负。'},
+            {id:'aquarius',nameCn:'水瓶座',nameLat:'Aquarius',symbol:'♒',period:'1月20日 - 2月18日',element:'风象',rulingPlanet:'天王星',
+             stars:[{cn:'危宿一',mag:2.9},{cn:'虚宿一',mag:3.0},{cn:'坟墓一',mag:3.3},{cn:'羽林军二十六',mag:3.5},{cn:'鈇鑕一',mag:3.9}],
+             pattern:[[-0.4,0.5],[0.4,0.5],[-0.3,0],[-0.3,-0.4],[0.2,-0.3]],
+             intro:'水瓶座以持瓶者形象著称，与伽倪墨得斯的神话故事相关。',
+             meaning:'象征独创、博爱、人道主义和理想。'},
+            {id:'pisces',nameCn:'双鱼座',nameLat:'Pisces',symbol:'♓',period:'2月19日 - 3月20日',element:'水象',rulingPlanet:'海王星',
+             stars:[{cn:'外屏七',mag:3.6},{cn:'右更二',mag:3.6},{cn:'霹雳五',mag:4.0},{cn:'云雨一',mag:4.3},{cn:'奎宿一',mag:4.5}],
+             pattern:[[-0.6,0.3],[-0.3,0.1],[0,0.2],[0.3,0],[0.6,0.3]],
+             intro:'双鱼座以两条相连的鱼为象征，代表爱与灵性的结合。',
+             meaning:'象征敏感、艺术、直觉和慈悲。'}
         ];
 
         const bgCanvas = document.getElementById('bgCanvas');
         const bgCtx = bgCanvas.getContext('2d');
         const mainCanvas = document.getElementById('mainCanvas');
         const mainCtx = mainCanvas.getContext('2d');
-        const panel = document.getElementById('panel');
-        const content = document.getElementById('content');
+        const detailsPanel = document.getElementById('details-panel');
+        const detailsContent = document.getElementById('details-content');
         const closeBtn = document.getElementById('close-btn');
 
-        let w, h, stars = [], offset = 0;
-        let rotY = 0, targetRot = 0, velocity = 0, isDrag = false, lastX = 0;
-        let selected = null, scale = 1, targetScale = 1;
-        let hitAreas = [];
+        let W, H;
+        let stars = [];
+        let milkyWayOffset = 0;
+        let rotation = 0;
+        let targetRotation = 0;
+        let rotationVelocity = 0;
+        let isDragging = false;
+        let lastMouseX = 0;
+        let selectedConstellation = null;
+        let scale = 1;
+        let targetScale = 1;
+        let currentHitAreas = [];
+        let animationTime = 0;
 
-        function resize() {
-            w = window.innerWidth;
-            h = window.innerHeight;
-            bgCanvas.width = w;
-            bgCanvas.height = h;
-            mainCanvas.width = w;
-            mainCanvas.height = h;
+        function init() {
+            W = window.innerWidth;
+            H = window.innerHeight;
+            bgCanvas.width = W;
+            bgCanvas.height = H;
+            mainCanvas.width = W;
+            mainCanvas.height = H;
+            generateStars();
+        }
+
+        function generateStars() {
             stars = [];
-            for (let i = 0; i < Math.floor(w * h / 3000); i++) {
-                stars.push({ x: Math.random() * w, y: Math.random() * h, size: Math.random() * 2 + 0.5, alpha: Math.random() * 0.5 + 0.3, phase: Math.random() * Math.PI * 2, speed: Math.random() * 0.02 + 0.01 });
+            const count = Math.floor((W * H) / 2500);
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    size: Math.random() * 2.5 + 0.5,
+                    baseAlpha: Math.random() * 0.4 + 0.2,
+                    phase: Math.random() * Math.PI * 2,
+                    speed: Math.random() * 0.03 + 0.01,
+                    twinkleSpeed: Math.random() * 0.05 + 0.02
+                });
             }
         }
 
-        function drawBg(t) {
-            bgCtx.fillStyle = '#0a0a1a';
-            bgCtx.fillRect(0, 0, w, h);
-            const grad = bgCtx.createLinearGradient(offset - w * 0.5, 0, offset + w * 1.5, 0);
-            grad.addColorStop(0, 'rgba(10,10,30,0)');
-            grad.addColorStop(0.3, 'rgba(30,20,60,0.4)');
-            grad.addColorStop(0.5, 'rgba(60,40,100,0.6)');
-            grad.addColorStop(0.7, 'rgba(30,20,60,0.4)');
-            grad.addColorStop(1, 'rgba(10,10,30,0)');
-            bgCtx.fillStyle = grad;
-            bgCtx.fillRect(0, 0, w, h);
-            offset += 0.2;
-            if (offset > w) offset = 0;
-            stars.forEach(s => {
-                const a = s.alpha + Math.sin(t * s.speed + s.phase) * 0.3;
+        function drawBackground() {
+            bgCtx.fillStyle = '#050510';
+            bgCtx.fillRect(0, 0, W, H);
+
+            const gradient = bgCtx.createLinearGradient(
+                milkyWayOffset - W * 0.6, H * 0.3,
+                milkyWayOffset + W * 1.6, H * 0.7
+            );
+            gradient.addColorStop(0, 'rgba(20, 15, 40, 0)');
+            gradient.addColorStop(0.2, 'rgba(40, 25, 70, 0.5)');
+            gradient.addColorStop(0.4, 'rgba(70, 45, 120, 0.7)');
+            gradient.addColorStop(0.5, 'rgba(90, 55, 140, 0.8)');
+            gradient.addColorStop(0.6, 'rgba(70, 45, 120, 0.7)');
+            gradient.addColorStop(0.8, 'rgba(40, 25, 70, 0.5)');
+            gradient.addColorStop(1, 'rgba(20, 15, 40, 0)');
+
+            bgCtx.fillStyle = gradient;
+            bgCtx.fillRect(0, 0, W, H);
+
+            milkyWayOffset += 0.3;
+            if (milkyWayOffset > W) milkyWayOffset = 0;
+
+            stars.forEach(star => {
+                const twinkle = Math.sin(animationTime * star.twinkleSpeed + star.phase);
+                const alpha = star.baseAlpha + twinkle * 0.25;
+                const size = star.size * (1 + twinkle * 0.1);
+
+                const glowGradient = bgCtx.createRadialGradient(
+                    star.x, star.y, 0, star.x, star.y, size * 3
+                );
+                glowGradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+                glowGradient.addColorStop(0.3, `rgba(200, 200, 255, ${alpha * 0.5})`);
+                glowGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
                 bgCtx.beginPath();
-                bgCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                bgCtx.fillStyle = `rgba(255,255,255,${a})`;
+                bgCtx.arc(star.x, star.y, size * 3, 0, Math.PI * 2);
+                bgCtx.fillStyle = glowGradient;
+                bgCtx.fill();
+
+                bgCtx.beginPath();
+                bgCtx.arc(star.x, star.y, size, 0, Math.PI * 2);
+                bgCtx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
                 bgCtx.fill();
             });
         }
 
-        function project(x, y, z) {
-            const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
-            const newX = x * cosY - z * sinY;
-            const newZ = x * sinY + z * cosY;
-            const fov = 600;
-            const s = fov / (fov + newZ);
-            return { x: w / 2 + newX * s, y: h / 2 + y * s * 0.6, scale: s, z: newZ };
+        function project3D(x, y, z) {
+            const cos = Math.cos(rotation);
+            const sin = Math.sin(rotation);
+            const newX = x * cos - z * sin;
+            const newZ = x * sin + z * cos;
+
+            const fov = 500;
+            const scale3D = fov / (fov + newZ);
+
+            return {
+                x: W / 2 + newX * scale3D,
+                y: H / 2 + y * scale3D * 0.7,
+                scale: scale3D,
+                z: newZ
+            };
         }
 
-        function draw(t) {
-            mainCtx.clearRect(0, 0, w, h);
-            const order = [];
-            data.forEach((d, i) => {
-                const angle = (i / data.length) * Math.PI * 2 - Math.PI / 2;
-                const radius = Math.min(w, h) * 0.35;
-                const p = project(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
-                order.push({ d, i, z: p.z });
-            });
-            order.sort((a, b) => a.z - b.z);
-            hitAreas = [];
-            order.forEach(item => {
-                const angle = (item.i / data.length) * Math.PI * 2 - Math.PI / 2;
-                const radius = Math.min(w, h) * 0.35;
-                const x = Math.cos(angle) * radius;
-                const z = Math.sin(angle) * radius;
-                const p = project(x, 0, z);
-                if (p.z < -400) return;
-                const mult = item.d.id === selected ? scale : 1;
-                const s = p.scale * mult;
-                const size = 25 * s;
-                const txt = 12 * s;
-                const color = `rgba(255,215,100,${Math.min(1, s * 0.8)})`;
+        function drawConstellation(constellation, baseAngle, isSelected) {
+            const radius = Math.min(W, H) * 0.38;
+            const x = Math.cos(baseAngle) * radius;
+            const z = Math.sin(baseAngle) * radius;
 
-                // Draw constellation lines (simplified V shape)
+            const proj = project3D(x, 0, z);
+
+            if (proj.z < -350) return null;
+
+            const scaleMultiplier = isSelected ? scale : 1;
+            const finalScale = proj.scale * scaleMultiplier;
+
+            const constellationSize = 35 * finalScale;
+            const textSize = 13 * finalScale;
+
+            const baseColor = isSelected ? 'rgba(255, 230, 120,' : 'rgba(255, 215, 100,';
+            const alpha = Math.min(0.9, finalScale * 0.85);
+
+            // Draw constellation pattern
+            if (constellation.pattern && constellation.pattern.length > 0) {
                 mainCtx.beginPath();
-                const points = [
-                    { px: p.x + (-0.5 + item.i % 5 * 0.2) * size, py: p.y + (-0.3 + item.i % 3 * 0.2) * size },
-                    { px: p.x + (item.i % 5 * 0.2) * size, py: p.y + (item.i % 4 * 0.15) * size },
-                    { px: p.x + (0.5 + item.i % 5 * 0.2) * size, py: p.y + (-0.3 + item.i % 3 * 0.2) * size }
-                ];
-                points.forEach((pt, idx) => {
-                    if (idx === 0) mainCtx.moveTo(pt.px, pt.py);
-                    else mainCtx.lineTo(pt.px, pt.py);
+                constellation.pattern.forEach((pt, i) => {
+                    const px = proj.x + pt[0] * constellationSize;
+                    const py = proj.y + pt[1] * constellationSize;
+                    if (i === 0) {
+                        mainCtx.moveTo(px, py);
+                    } else {
+                        mainCtx.lineTo(px, py);
+                    }
                 });
-                mainCtx.strokeStyle = color;
-                mainCtx.lineWidth = 1 * s;
+                mainCtx.strokeStyle = `${baseColor}${Math.min(0.6, alpha * 0.7)})`;
+                mainCtx.lineWidth = 2 * finalScale;
                 mainCtx.stroke();
 
-                // Draw stars
-                points.forEach(pt => {
-                    const grad = mainCtx.createRadialGradient(pt.px, pt.py, 0, pt.px, pt.py, 6 * s);
-                    grad.addColorStop(0, color);
-                    grad.addColorStop(0.5, 'rgba(255,215,100,0.3)');
-                    grad.addColorStop(1, 'rgba(255,215,100,0)');
+                // Draw stars in pattern
+                constellation.pattern.forEach((pt, i) => {
+                    const px = proj.x + pt[0] * constellationSize;
+                    const py = proj.y + pt[1] * constellationSize;
+                    const starInfo = constellation.stars[i];
+                    const starSize = starInfo ? Math.max(1.5, (4 - starInfo.mag * 0.5) * finalScale) : 2 * finalScale;
+
+                    // Glow effect
+                    const glowGradient = mainCtx.createRadialGradient(px, py, 0, px, py, starSize * 4);
+                    glowGradient.addColorStop(0, `${baseColor}1)`);
+                    glowGradient.addColorStop(0.3, `${baseColor}0.6)`);
+                    glowGradient.addColorStop(1, `${baseColor}0)`);
+
                     mainCtx.beginPath();
-                    mainCtx.arc(pt.px, pt.py, 6 * s, 0, Math.PI * 2);
-                    mainCtx.fillStyle = grad;
+                    mainCtx.arc(px, py, starSize * 4, 0, Math.PI * 2);
+                    mainCtx.fillStyle = glowGradient;
                     mainCtx.fill();
+
+                    // Core
                     mainCtx.beginPath();
-                    mainCtx.arc(pt.px, pt.py, 2 * s, 0, Math.PI * 2);
-                    mainCtx.fillStyle = '#fff';
+                    mainCtx.arc(px, py, starSize, 0, Math.PI * 2);
+                    mainCtx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
                     mainCtx.fill();
                 });
+            }
 
-                if (s > 0.3) {
-                    mainCtx.font = `${txt}px SimSun`;
-                    mainCtx.fillStyle = color;
-                    mainCtx.textAlign = 'center';
-                    mainCtx.fillText(item.d.nameCn, p.x, p.y + size * 2);
-                    mainCtx.font = `${txt * 0.8}px Times New Roman`;
-                    mainCtx.fillStyle = `rgba(255,255,255,${Math.min(0.8, s * 0.7)})`;
-                    mainCtx.fillText(item.d.nameLat, p.x, p.y + size * 2 + txt + 5);
-                }
+            // Draw labels
+            if (finalScale > 0.25) {
+                mainCtx.font = `${textSize}px SimSun`;
+                mainCtx.fillStyle = `${baseColor}${alpha})`;
+                mainCtx.textAlign = 'center';
+                mainCtx.fillText(constellation.nameCn, proj.x, proj.y + constellationSize * 1.8);
 
-                if (p.z > -300) {
-                    hitAreas.push({ id: item.d.id, x: p.x - size * 2, y: p.y - size * 2, w: size * 4, h: size * 4 + txt * 3, z: p.z });
-                }
-            });
+                mainCtx.font = `${textSize * 0.85}px Times New Roman`;
+                mainCtx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.8})`;
+                mainCtx.fillText(constellation.nameLat, proj.x, proj.y + constellationSize * 1.8 + textSize + 4);
+            }
+
+            return {
+                id: constellation.id,
+                x: proj.x - constellationSize * 2,
+                y: proj.y - constellationSize * 1.5,
+                w: constellationSize * 4,
+                h: constellationSize * 3 + textSize * 2.5,
+                z: proj.z,
+                inFront: proj.z > -250
+            };
         }
 
-        function animate(t) {
-            t *= 0.001;
-            drawBg(t);
-            if (!isDrag) {
-                velocity *= 0.98;
-                targetRot += velocity;
+        function drawScene() {
+            mainCtx.clearRect(0, 0, W, H);
+
+            // Sort constellations by Z depth
+            const drawOrder = constellations.map((c, i) => {
+                const angle = (i / constellations.length) * Math.PI * 2 - Math.PI / 2;
+                const radius = Math.min(W, H) * 0.38;
+                const x = Math.cos(angle) * radius;
+                const z = Math.sin(angle) * radius;
+                const proj = project3D(x, 0, z);
+                return { constellation: c, angle, z: proj.z };
+            });
+
+            drawOrder.sort((a, b) => a.z - b.z);
+
+            // Draw all constellations
+            const hitAreas = [];
+            drawOrder.forEach(item => {
+                const hitArea = drawConstellation(
+                    item.constellation,
+                    item.angle,
+                    selectedConstellation === item.constellation.id
+                );
+                if (hitArea && hitArea.inFront) {
+                    hitAreas.push(hitArea);
+                }
+            });
+
+            return hitAreas;
+        }
+
+        function animate(timestamp) {
+            animationTime = timestamp * 0.001;
+
+            // Physics
+            if (!isDragging) {
+                rotationVelocity *= 0.985;
+                targetRotation += rotationVelocity;
             }
-            rotY += (targetRot - rotY) * 0.1;
-            if (selected) scale += (targetScale - scale) * 0.1;
-            draw(t);
+
+            // Smooth rotation interpolation
+            rotation += (targetRotation - rotation) * 0.08;
+
+            // Scale animation
+            if (selectedConstellation) {
+                scale += (targetScale - scale) * 0.12;
+            } else {
+                scale += (1 - scale) * 0.1;
+            }
+
+            // Draw
+            drawBackground();
+            currentHitAreas = drawScene();
+
             requestAnimationFrame(animate);
         }
 
-        mainCanvas.addEventListener('mousedown', e => { isDrag = true; lastX = e.clientX; });
-        window.addEventListener('mousemove', e => {
-            if (isDrag) {
-                const dx = e.clientX - lastX;
-                velocity = dx * 0.005;
-                targetRot += velocity;
-                lastX = e.clientX;
+        function handlePointerDown(e) {
+            isDragging = true;
+            lastMouseX = e.clientX;
+        }
+
+        function handlePointerMove(e) {
+            if (isDragging) {
+                const deltaX = e.clientX - lastMouseX;
+                rotationVelocity = deltaX * 0.006;
+                targetRotation += rotationVelocity;
+                lastMouseX = e.clientX;
             }
-            let hover = false;
-            [...hitAreas].sort((a, b) => b.z - a.z).forEach(h => {
-                if (e.clientX >= h.x && e.clientX <= h.x + h.w && e.clientY >= h.y && e.clientY <= h.y + h.h) {
+
+            // Hover effect
+            let hovering = false;
+            const sortedAreas = [...currentHitAreas].sort((a, b) => b.z - a.z);
+            for (const area of sortedAreas) {
+                if (e.clientX >= area.x && e.clientX <= area.x + area.w &&
+                    e.clientY >= area.y && e.clientY <= area.y + area.h) {
                     document.body.style.cursor = 'pointer';
-                    hover = true;
+                    hovering = true;
+                    break;
                 }
-            });
-            if (!hover) document.body.style.cursor = isDrag ? 'grabbing' : 'grab';
-        });
-        window.addEventListener('mouseup', () => isDrag = false);
-        mainCanvas.addEventListener('click', e => {
-            if (Math.abs(velocity) > 0.01) return;
-            [...hitAreas].sort((a, b) => b.z - a.z).forEach(h => {
-                if (e.clientX >= h.x && e.clientX <= h.x + h.w && e.clientY >= h.y && e.clientY <= h.y + h.h) {
-                    const d = data.find(x => x.id === h.id);
-                    selected = h.id;
-                    targetScale = 1.8;
-                    content.innerHTML = `<h1>${d.nameCn}</h1><h2>${d.nameLat}</h2><div class="symbol">${d.symbol}</div><div class="row"><span class="label">日期：</span>${d.period}</div><div class="row"><span class="label">元素：</span>${d.element}</div><div class="row"><span class="label">守护星：</span>${d.planet}</div><div class="section"><h3>简介</h3><p>${d.intro}</p></div><div class="section"><h3>寓意</h3><p>${d.meaning}</p></div>`;
-                    panel.classList.add('visible');
+            }
+            if (!hovering) {
+                document.body.style.cursor = isDragging ? 'grabbing' : 'grab';
+            }
+        }
+
+        function handlePointerUp() {
+            isDragging = false;
+        }
+
+        function handleClick(e) {
+            // Ignore click if still moving fast
+            if (Math.abs(rotationVelocity) > 0.005) return;
+
+            const sortedAreas = [...currentHitAreas].sort((a, b) => b.z - a.z);
+            for (const area of sortedAreas) {
+                if (e.clientX >= area.x && e.clientX <= area.x + area.w &&
+                    e.clientY >= area.y && e.clientY <= area.y + area.h) {
+                    showDetails(area.id);
+                    return;
                 }
-            });
+            }
+
+            // Click outside - close panel
+            hideDetails();
+        }
+
+        function showDetails(id) {
+            const data = constellations.find(c => c.id === id);
+            if (!data) return;
+
+            selectedConstellation = id;
+            targetScale = 1.6;
+
+            detailsContent.innerHTML = `
+                <h1>${data.nameCn}</h1>
+                <h2>${data.nameLat}</h2>
+                <div class="symbol">${data.symbol}</div>
+                <div class="info-row"><span class="label">日期：</span>${data.period}</div>
+                <div class="info-row"><span class="label">元素：</span>${data.element}</div>
+                <div class="info-row"><span class="label">守护星：</span>${data.rulingPlanet}</div>
+                <div class="stars-section">
+                    <h3>主要恒星</h3>
+                    <ul>
+                        ${data.stars.map(s => `<li>${s.cn} (视星等 ${s.mag})</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="content-section">
+                    <h3>简介</h3>
+                    <p>${data.intro}</p>
+                </div>
+                <div class="content-section">
+                    <h3>寓意</h3>
+                    <p>${data.meaning}</p>
+                </div>
+            `;
+
+            detailsPanel.classList.add('visible');
+        }
+
+        function hideDetails() {
+            detailsPanel.classList.remove('visible');
+            selectedConstellation = null;
+            targetScale = 1;
+        }
+
+        // Event listeners
+        mainCanvas.addEventListener('mousedown', handlePointerDown);
+        window.addEventListener('mousemove', handlePointerMove);
+        window.addEventListener('mouseup', handlePointerUp);
+        mainCanvas.addEventListener('click', handleClick);
+
+        // Touch support
+        mainCanvas.addEventListener('touchstart', e => { e.preventDefault(); handlePointerDown(e.touches[0]); });
+        window.addEventListener('touchmove', e => { e.preventDefault(); handlePointerMove(e.touches[0]); });
+        window.addEventListener('touchend', e => {
+            handlePointerUp();
+            if (e.changedTouches.length > 0) {
+                handleClick(e.changedTouches[0]);
+            }
         });
 
-        closeBtn.addEventListener('click', e => { e.stopPropagation(); panel.classList.remove('visible'); selected = null; targetScale = 1; });
-        window.addEventListener('resize', resize);
-        resize();
-        animate(0);
+        closeBtn.addEventListener('click', e => { e.stopPropagation(); hideDetails(); });
+
+        window.addEventListener('resize', () => {
+            init();
+        });
+
+        // Initialize
+        init();
+        requestAnimationFrame(animate);
     </script>
 </body>
 </html>
