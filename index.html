@@ -97,186 +97,77 @@
     <script>
         const constellations = [
             {id:'aries',nameCn:'白羊座',nameLat:'Aries',symbol:'♈',period:'3月21日 - 4月19日',element:'火象',rulingPlanet:'火星',
-             stars:[{cn:'娄宿三',mag:2.0},{cn:'娄宿一',mag:2.6},{cn:'胃宿一',mag:3.6},{cn:'胃宿二',mag:4.5},{cn:'胃宿三',mag:4.6}],
+             stars:[{cn:'娄宿三',mag:2.0},{cn:'娄宿一',mag:2.6},{cn:'胃宿一',mag:3.6}],
              pattern:[[0.1,0.1],[0.3,0.05],[0.5,0.2],[0.7,0.15],[0.9,0.25]],
              intro:'白羊座是黄道十二星座之首，代表新生与力量。金羊毛传说使其成为勇气与冒险的象征。',
              meaning:'象征勇气、进取、领导力和开创精神。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M30 35 Q15 15 25 5 Q35 10 35 20" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M30 35 Q45 15 40 5 Q50 10 50 20" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="50" cy="50" r="20" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="40" cy="45" r="3" fill="#fff"/>
-                 <circle cx="60" cy="45" r="3" fill="#fff"/>
-                 <path d="M35 55 Q50 62 65 55" fill="none" stroke="#ffd764" stroke-width="3"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20ram%20head%20minimalist%20on%20transparent&image_size=square'},
             {id:'taurus',nameCn:'金牛座',nameLat:'Taurus',symbol:'♉',period:'4月20日 - 5月20日',element:'土象',rulingPlanet:'金星',
-             stars:[{cn:'毕宿五',mag:0.9},{cn:'五车五',mag:1.7},{cn:'天关',mag:2.9},{cn:'毕宿一',mag:3.2},{cn:'毕宿四',mag:3.8},{cn:'毕宿二',mag:4.0},{cn:'毕宿六',mag:4.1}],
+             stars:[{cn:'毕宿五',mag:0.9},{cn:'五车五',mag:1.7},{cn:'天关',mag:2.9}],
              pattern:[[0.2,0.15],[0.35,0.25],[0.25,0.4],[0.45,0.5],[0.65,0.35],[0.55,0.45],[0.75,0.2]],
              intro:'金牛座以公牛为象征，毕宿五是其最亮的红超巨星，在冬季星空中格外醒目。',
              meaning:'象征稳健、务实、美感与坚持。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M15 35 Q5 20 15 10 Q25 15 25 25 Q20 20 25 25" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M85 35 Q95 20 85 10 Q75 15 75 25 Q80 20 75 25" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="50" cy="55" r="22" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="40" cy="50" r="3" fill="#fff"/>
-                 <circle cx="60" cy="50" r="3" fill="#fff"/>
-                 <path d="M35 65 Q50 72 65 65" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M42 62 L42 68 M58 62 L58 68" stroke="#ffd764" stroke-width="3"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20bull%20head%20minimalist%20on%20transparent&image_size=square'},
             {id:'gemini',nameCn:'双子座',nameLat:'Gemini',symbol:'♊',period:'5月21日 - 6月21日',element:'风象',rulingPlanet:'水星',
-             stars:[{cn:'北河二',mag:1.6},{cn:'北河三',mag:1.1},{cn:'井宿三',mag:1.9},{cn:'井宿一',mag:3.0},{cn:'天樽二',mag:3.5},{cn:'井宿二',mag:3.9},{cn:'天樽一',mag:4.1},{cn:'天樽三',mag:4.2}],
+             stars:[{cn:'北河二',mag:1.6},{cn:'北河三',mag:1.1},{cn:'井宿三',mag:1.9}],
              pattern:[[0.15,0.05],[0.25,0.2],[0.2,0.45],[0.35,0.3],[0.45,0.15],[0.4,0.4],[0.55,0.35],[0.7,0.25]],
              intro:'双子座以双胞胎为象征，北河二和北河三是其标志性的两颗亮星。',
              meaning:'象征沟通、智慧、适应性和多才多艺。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M30 35 Q20 25 30 15 Q40 25 30 35" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M70 35 Q60 25 70 15 Q80 25 70 35" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="30" cy="42" r="3" fill="#fff"/>
-                 <circle cx="70" cy="42" r="3" fill="#fff"/>
-                 <line x1="30" y1="42" x2="30" y2="75" stroke="#ffd764" stroke-width="4"/>
-                 <line x1="70" y1="42" x2="70" y2="75" stroke="#ffd764" stroke-width="4"/>
-                 <line x1="20" y1="55" x2="40" y2="55" stroke="#ffd764" stroke-width="3"/>
-                 <line x1="60" y1="55" x2="80" y2="55" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M25 75 Q30 85 35 75" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M65 75 Q70 85 75 75" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <circle cx="26" cy="32" r="2" fill="#fff"/>
-                 <circle cx="34" cy="32" r="2" fill="#fff"/>
-                 <circle cx="66" cy="32" r="2" fill="#fff"/>
-                 <circle cx="74" cy="32" r="2" fill="#fff"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20two%20faces%20minimalist%20on%20transparent&image_size=square'},
             {id:'cancer',nameCn:'巨蟹座',nameLat:'Cancer',symbol:'♋',period:'6月22日 - 7月22日',element:'水象',rulingPlanet:'月亮',
-             stars:[{cn:'柳宿增三',mag:3.5},{cn:'鬼宿四',mag:3.9},{cn:'鬼宿一',mag:4.0},{cn:'积尸气',mag:3.9},{cn:'鬼宿二',mag:4.2}],
+             stars:[{cn:'柳宿增三',mag:3.5},{cn:'鬼宿四',mag:3.9},{cn:'鬼宿一',mag:4.0}],
              pattern:[[0.5,0.25],[0.4,0.5],[0.25,0.7],[0.7,0.65],[0.85,0.85]],
              intro:'巨蟹座以螃蟹为象征，蜂巢星团是其最著名的深空天体。',
              meaning:'象征情感、保护、家庭和直觉。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M20 50 Q10 35 15 25 Q25 20 30 35" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M80 50 Q90 35 85 25 Q75 20 70 35" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="50" cy="55" r="25" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="40" cy="50" r="3" fill="#fff"/>
-                 <circle cx="60" cy="50" r="3" fill="#fff"/>
-                 <path d="M25 68 Q18 80 28 88" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M75 68 Q82 80 72 88" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M35 72 Q40 75 45 72" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M55 72 Q60 75 65 72" fill="none" stroke="#ffd764" stroke-width="3"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20crab%20minimalist%20on%20transparent&image_size=square'},
             {id:'leo',nameCn:'狮子座',nameLat:'Leo',symbol:'♌',period:'7月23日 - 8月22日',element:'火象',rulingPlanet:'太阳',
-             stars:[{cn:'轩辕十四',mag:1.4},{cn:'五帝座一',mag:2.0},{cn:'轩辕十二',mag:2.3},{cn:'轩辕九',mag:2.6},{cn:'轩辕十三',mag:2.9}],
+             stars:[{cn:'轩辕十四',mag:1.4},{cn:'五帝座一',mag:2.0},{cn:'轩辕十二',mag:2.3}],
              pattern:[[0.7,0.1],[0.75,0.3],[0.6,0.4],[0.4,0.35],[0.2,0.45],[0.1,0.3],[0.15,0.55]],
              intro:'狮子座是夏季星空中最壮观的星座，轩辕十四被誉为"王者之星"。',
              meaning:'象征领导、自信、创造力和慷慨。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <circle cx="50" cy="55" r="22" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M30 35 Q20 25 25 15 Q35 20 35 30" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M40 30 Q35 15 45 20 Q50 10 50 25" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M60 30 Q65 15 55 20 Q50 10 50 25" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M70 35 Q80 25 75 15 Q65 20 65 30" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <circle cx="42" cy="50" r="3" fill="#fff"/>
-                 <circle cx="58" cy="50" r="3" fill="#fff"/>
-                 <path d="M40 60 Q50 68 60 60" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M45 65 L55 65" stroke="#ffd764" stroke-width="2"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20lion%20head%20minimalist%20on%20transparent&image_size=square'},
             {id:'virgo',nameCn:'处女座',nameLat:'Virgo',symbol:'♍',period:'8月23日 - 9月22日',element:'土象',rulingPlanet:'水星',
-             stars:[{cn:'角宿一',mag:1.0},{cn:'东上相',mag:2.8},{cn:'角宿二',mag:3.4},{cn:'亢宿一',mag:4.0},{cn:'亢宿二',mag:4.5}],
+             stars:[{cn:'角宿一',mag:1.0},{cn:'东上相',mag:2.8},{cn:'角宿二',mag:3.4}],
              pattern:[[0.85,0.1],[0.7,0.2],[0.55,0.15],[0.5,0.35],[0.4,0.3],[0.25,0.45],[0.1,0.35]],
              intro:'处女座是黄道中最大的星座，角宿一发出美丽的蓝白光芒。',
              meaning:'象征完美、分析、服务和务实。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M50 25 Q40 10 45 5 Q55 5 60 10 Q50 15 50 25" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="42" cy="30" r="3" fill="#fff"/>
-                 <circle cx="58" cy="30" r="3" fill="#fff"/>
-                 <path d="M45 38 Q50 42 55 38" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M35 45 Q30 65 35 85" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M65 45 Q70 65 65 85" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M35 50 Q50 55 65 50" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <circle cx="48" cy="52" r="2" fill="#fff"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20woman%20face%20long%20hair%20minimalist%20on%20transparent&image_size=square'},
             {id:'libra',nameCn:'天秤座',nameLat:'Libra',symbol:'♎',period:'9月23日 - 10月23日',element:'风象',rulingPlanet:'金星',
-             stars:[{cn:'氐宿一',mag:2.6},{cn:'氐宿四',mag:2.7},{cn:'氐宿三',mag:3.3},{cn:'氐宿增一',mag:4.0},{cn:'折威七',mag:3.9}],
+             stars:[{cn:'氐宿一',mag:2.6},{cn:'氐宿四',mag:2.7},{cn:'氐宿三',mag:3.3}],
              pattern:[[0.15,0.5],[0.3,0.35],[0.5,0.5],[0.75,0.4],[0.85,0.6],[0.55,0.8]],
              intro:'天秤座是唯一以无生命物体为象征的黄道星座，代表公正与平衡。',
              meaning:'象征和谐、审美、公正和外交。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <line x1="50" y1="15" x2="50" y2="40" stroke="#ffd764" stroke-width="4"/>
-                 <line x1="25" y1="40" x2="75" y2="40" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M25 40 L25 55 Q25 70 38 70 Q50 70 50 55 L50 40" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M50 40 L50 55 Q50 70 62 70 Q75 70 75 55 L75 40" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <circle cx="37" cy="62" r="3" fill="#fff"/>
-                 <circle cx="63" cy="62" r="3" fill="#fff"/>
-                 <path d="M45 15 Q50 10 55 15" fill="none" stroke="#ffd764" stroke-width="3"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20balance%20scales%20minimalist%20on%20transparent&image_size=square'},
             {id:'scorpio',nameCn:'天蝎座',nameLat:'Scorpio',symbol:'♏',period:'10月24日 - 11月22日',element:'水象',rulingPlanet:'冥王星',
-             stars:[{cn:'心宿二',mag:1.1},{cn:'尾宿一',mag:1.6},{cn:'房宿三',mag:2.3},{cn:'尾宿八',mag:2.4},{cn:'心宿三',mag:2.8},{cn:'尾宿二',mag:2.9},{cn:'尾宿三',mag:3.1}],
+             stars:[{cn:'心宿二',mag:1.1},{cn:'尾宿一',mag:1.6},{cn:'房宿三',mag:2.3}],
              pattern:[[0.15,0.25],[0.3,0.35],[0.2,0.5],[0.25,0.65],[0.4,0.6],[0.55,0.7],[0.6,0.55],[0.7,0.65],[0.85,0.55]],
              intro:'天蝎座以蝎子为象征，心宿二是其火红的红超巨星，极为壮观。',
              meaning:'象征热情、神秘、深刻和转变。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <circle cx="40" cy="45" r="18" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M25 35 Q15 30 20 20 Q25 15 30 25" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M25 45 Q15 45 18 55 Q22 60 28 55" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M30 55 Q25 65 30 72" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <circle cx="35" cy="42" r="3" fill="#fff"/>
-                 <path d="M58 42 Q70 38 75 50 Q82 65 72 75 Q62 85 55 80" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M55 80 Q62 88 68 80" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M55 80 Q58 92 52 88" fill="none" stroke="#ffd764" stroke-width="3"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20scorpion%20minimalist%20on%20transparent&image_size=square'},
             {id:'sagittarius',nameCn:'射手座',nameLat:'Sagittarius',symbol:'♐',period:'11月23日 - 12月21日',element:'火象',rulingPlanet:'木星',
-             stars:[{cn:'箕宿三',mag:1.8},{cn:'斗宿六',mag:2.1},{cn:'斗宿五',mag:2.6},{cn:'建星一',mag:2.8},{cn:'建星六',mag:3.0},{cn:'建星二',mag:3.3},{cn:'建星三',mag:3.5}],
+             stars:[{cn:'箕宿三',mag:1.8},{cn:'斗宿六',mag:2.1},{cn:'斗宿五',mag:2.6}],
              pattern:[[0.4,0.45],[0.5,0.4],[0.45,0.25],[0.55,0.3],[0.6,0.15],[0.3,0.2],[0.25,0.35],[0.15,0.3],[0.2,0.5]],
              intro:'射手座以弓箭手为象征，指向银河系中心，区域内星团星云密布。',
              meaning:'象征探索、乐观、自由和哲学。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M25 75 Q35 85 45 75 Q55 65 45 60" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M45 60 L85 20" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="35" cy="72" r="3" fill="#fff"/>
-                 <circle cx="88" cy="17" r="3" fill="#fff"/>
-                 <path d="M85 20 Q95 12 92 22" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M85 20 Q90 5 95 15" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M40 55 Q30 45 35 40 Q40 35 45 45" fill="none" stroke="#ffd764" stroke-width="3"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20bow%20and%20arrow%20minimalist%20on%20transparent&image_size=square'},
             {id:'capricorn',nameCn:'摩羯座',nameLat:'Capricornus',symbol:'♑',period:'12月22日 - 1月19日',element:'土象',rulingPlanet:'土星',
-             stars:[{cn:'牛宿一',mag:3.0},{cn:'牛宿二',mag:3.1},{cn:'女宿一',mag:3.7},{cn:'垒壁阵四',mag:3.8},{cn:'牛宿增六',mag:4.0}],
+             stars:[{cn:'牛宿一',mag:3.0},{cn:'牛宿二',mag:3.1},{cn:'女宿一',mag:3.7}],
              pattern:[[0.1,0.6],[0.35,0.7],[0.55,0.5],[0.7,0.65],[0.9,0.5],[0.8,0.3],[0.6,0.35]],
              intro:'摩羯座以海山羊为象征，是古老而神秘的星座。',
              meaning:'象征耐心、责任、纪律和抱负。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M40 30 Q30 15 35 5 Q45 5 50 15 Q55 5 60 15 Q55 25 50 30" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="45" cy="22" r="3" fill="#fff"/>
-                 <path d="M50 30 L50 50 Q50 60 40 60 Q30 60 30 50" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M30 50 L25 70 Q20 85 30 90 Q40 95 45 85" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M45 85 Q50 90 55 82" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <circle cx="40" cy="52" r="2" fill="#fff"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20goat%20fish%20minimalist%20on%20transparent&image_size=square'},
             {id:'aquarius',nameCn:'水瓶座',nameLat:'Aquarius',symbol:'♒',period:'1月20日 - 2月18日',element:'风象',rulingPlanet:'天王星',
-             stars:[{cn:'危宿一',mag:2.9},{cn:'虚宿一',mag:3.0},{cn:'坟墓一',mag:3.3},{cn:'羽林军二十六',mag:3.5},{cn:'鈇鑕一',mag:3.9}],
+             stars:[{cn:'危宿一',mag:2.9},{cn:'虚宿一',mag:3.0},{cn:'坟墓一',mag:3.3}],
              pattern:[[0.7,0.1],[0.6,0.25],[0.45,0.2],[0.4,0.4],[0.3,0.35],[0.2,0.5],[0.3,0.65],[0.5,0.55],[0.65,0.65]],
              intro:'水瓶座以持瓶者形象著称，与伽倪墨得斯的神话故事相关。',
              meaning:'象征独创、博爱、人道主义和理想。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M30 25 Q50 20 70 25 L70 45 Q50 50 30 45 Z" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <circle cx="50" cy="35" r="3" fill="#fff"/>
-                 <path d="M40 45 L40 55 Q35 60 40 65 L40 75 Q35 80 40 85" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M60 45 L60 55 Q65 60 60 65 L60 75 Q65 80 60 85" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <circle cx="40" cy="60" r="2" fill="#fff"/>
-                 <circle cx="60" cy="60" r="2" fill="#fff"/>
-                 <circle cx="40" cy="82" r="2" fill="#fff"/>
-                 <circle cx="60" cy="82" r="2" fill="#fff"/>
-             </svg>`},
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20water%20pot%20minimalist%20on%20transparent&image_size=square'},
             {id:'pisces',nameCn:'双鱼座',nameLat:'Pisces',symbol:'♓',period:'2月19日 - 3月20日',element:'水象',rulingPlanet:'海王星',
-             stars:[{cn:'外屏七',mag:3.6},{cn:'右更二',mag:3.6},{cn:'霹雳五',mag:4.0},{cn:'云雨一',mag:4.3},{cn:'奎宿一',mag:4.5}],
+             stars:[{cn:'外屏七',mag:3.6},{cn:'右更二',mag:3.6},{cn:'霹雳五',mag:4.0}],
              pattern:[[0.1,0.7],[0.25,0.55],[0.2,0.35],[0.35,0.45],[0.5,0.3],[0.7,0.4],[0.6,0.55],[0.85,0.35],[0.9,0.55],[0.8,0.65]],
              intro:'双鱼座以两条相连的鱼为象征，代表爱与灵性的结合。',
              meaning:'象征敏感、艺术、直觉和慈悲。',
-             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M35 35 Q25 20 35 10 Q45 20 35 35" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M35 35 L35 50 Q35 55 40 55 Q45 55 45 50 L45 35" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <circle cx="32" cy="30" r="3" fill="#fff"/>
-                 <path d="M65 65 Q75 50 65 40 Q55 50 65 65" fill="none" stroke="#ffd764" stroke-width="4"/>
-                 <path d="M65 65 L65 80 Q65 85 60 85 Q55 85 55 80 L55 65" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <circle cx="68" cy="60" r="3" fill="#fff"/>
-                 <path d="M45 35 Q50 45 55 55" fill="none" stroke="#ffd764" stroke-width="3"/>
-                 <path d="M55 55 Q50 65 45 65" fill="none" stroke="#ffd764" stroke-width="3"/>
-             </svg>`}
+             imgSrc:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20white%20line%20art%20two%20fish%20minimalist%20on%20transparent&image_size=square'}
         ];
 
         const bgCanvas = document.getElementById('bgCanvas');
@@ -540,7 +431,9 @@
             detailsPanel.style.boxShadow = `0 0 40px ${colors.shadow}, 0 0 80px ${colors.glow}, inset 0 0 60px ${colors.glow}`;
 
             detailsContent.innerHTML = `
-                <div class="constellation-img" style="border-color: ${colors.border}; box-shadow: 0 0 25px ${colors.shadow}, inset 0 0 15px ${colors.glow};">${data.svg}</div>
+                <div class="constellation-img" style="border-color: ${colors.border}; box-shadow: 0 0 25px ${colors.shadow}, inset 0 0 15px ${colors.glow};">
+                    <img src="${data.imgSrc}" alt="${data.nameCn}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                </div>
                 <h1 style="text-shadow: 0 0 20px ${colors.glow}, 0 0 40px ${colors.glow};">${data.nameCn}</h1>
                 <h2 style="color: #fff; text-shadow: 0 0 10px ${colors.glow};">${data.nameLat}</h2>
                 <div class="symbol" style="text-shadow: 0 0 30px ${colors.border}, 0 0 60px ${colors.glow};">${data.symbol}</div>
@@ -549,7 +442,7 @@
                 <div class="info-row" style="border-bottom-color: ${colors.border};"><span class="label" style="text-shadow: 0 0 8px ${colors.glow};">守护星：</span>${data.rulingPlanet}</div>
                 <div class="stars-section">
                     <h3 style="color: #fff; text-shadow: 0 0 8px ${colors.glow};">主要恒星</h3>
-                    <ul>${data.stars.slice(0, 3).map(s => `<li style="text-shadow: 0 0 5px ${colors.glow};">${s.cn} (视星等 ${s.mag})</li>`).join('')}</ul>
+                    <ul>${data.stars.map(s => `<li style="text-shadow: 0 0 5px ${colors.glow};">${s.cn} (视星等 ${s.mag})</li>`).join('')}</ul>
                 </div>
                 <div class="content-section">
                     <h3 style="color: #fff; text-shadow: 0 0 8px ${colors.glow};">简介</h3>
