@@ -365,15 +365,15 @@
 
             stars.forEach(star => {
                 const twinkle = Math.sin(animationTime * star.twinkleSpeed + star.phase);
-                const alpha = star.baseAlpha + twinkle * 0.35;
-                const size = star.size * (1 + twinkle * 0.2);
+                const alpha = star.baseAlpha + twinkle * 0.25;
+                const size = star.size * (1 + twinkle * 0.15);
 
-                const glowGrad = bgCtx.createRadialGradient(star.x, star.y, 0, star.x, star.y, size * 5);
-                glowGrad.addColorStop(0, `rgba(255, 250, 220, ${alpha})`);
-                glowGrad.addColorStop(0.3, `rgba(255, 220, 150, ${alpha * 0.5})`);
-                glowGrad.addColorStop(0.6, `rgba(200, 150, 255, ${alpha * 0.3})`);
+                const glowGrad = bgCtx.createRadialGradient(star.x, star.y, 0, star.x, star.y, size * 2.5);
+                glowGrad.addColorStop(0, `rgba(255, 250, 220, ${alpha * 0.7})`);
+                glowGrad.addColorStop(0.4, `rgba(255, 220, 150, ${alpha * 0.35})`);
+                glowGrad.addColorStop(0.8, `rgba(200, 150, 255, ${alpha * 0.15})`);
                 glowGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                bgCtx.beginPath(); bgCtx.arc(star.x, star.y, size * 5, 0, Math.PI * 2);
+                bgCtx.beginPath(); bgCtx.arc(star.x, star.y, size * 2.5, 0, Math.PI * 2);
                 bgCtx.fillStyle = glowGrad; bgCtx.fill();
 
                 bgCtx.beginPath(); bgCtx.arc(star.x, star.y, size, 0, Math.PI * 2);
@@ -422,12 +422,12 @@
                     const starInfo = constellation.stars[i % constellation.stars.length];
                     const starSize = starInfo ? Math.max(2, (5 - starInfo.mag * 0.5) * finalScale) : 2.5 * finalScale;
                     const twinkle = Math.sin(animationTime * (0.1 + i * 0.02));
-                    const glowSize = starSize * (6 + twinkle * 2);
+                    const glowSize = starSize * (3 + twinkle);
 
                     const glowGrad = mainCtx.createRadialGradient(px, py, 0, px, py, glowSize);
-                    glowGrad.addColorStop(0, `${baseColor}1)`);
-                    glowGrad.addColorStop(0.3, `${baseColor}0.7)`);
-                    glowGrad.addColorStop(0.6, 'rgba(200, 150, 255, 0.3)');
+                    glowGrad.addColorStop(0, `${baseColor}0.8)`);
+                    glowGrad.addColorStop(0.4, `${baseColor}0.5)`);
+                    glowGrad.addColorStop(0.7, 'rgba(200, 150, 255, 0.2)');
                     glowGrad.addColorStop(1, `${baseColor}0)`);
                     mainCtx.beginPath(); mainCtx.arc(px, py, glowSize, 0, Math.PI * 2);
                     mainCtx.fillStyle = glowGrad; mainCtx.fill();
