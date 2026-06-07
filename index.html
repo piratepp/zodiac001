@@ -11,7 +11,7 @@
             font-family: "SimSun", "Times New Roman", serif;
         }
         body {
-            background: #050510;
+            background: linear-gradient(135deg, #030308 0%, #0a0a20 50%, #050510 100%);
             cursor: grab;
             user-select: none;
         }
@@ -19,51 +19,72 @@
         canvas { display: block; position: fixed; top: 0; left: 0; }
         #details-panel {
             position: fixed; left: 30px; top: 50%; transform: translateY(-50%);
-            width: 340px; max-width: 38vw; max-height: 85vh;
-            background: rgba(5, 5, 20, 0.92);
-            border: 2px solid rgba(255, 215, 100, 0.6);
-            border-radius: 12px; padding: 25px;
+            width: 360px; max-width: 38vw; max-height: 88vh;
+            background: rgba(8, 8, 30, 0.55);
+            border: 2px solid rgba(255, 220, 140, 0.7);
+            border-radius: 16px; padding: 28px;
             color: #ffd764; opacity: 0; pointer-events: none;
             transition: opacity 0.4s ease;
             overflow-y: auto; z-index: 100;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 0 50px rgba(255, 215, 100, 0.3), inset 0 0 80px rgba(255, 215, 100, 0.03);
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 0 60px rgba(255, 215, 100, 0.35),
+                0 0 120px rgba(255, 180, 80, 0.15),
+                inset 0 0 80px rgba(255, 220, 140, 0.06);
         }
         #details-panel.visible { opacity: 1; pointer-events: auto; }
-        #details-panel h1 { font-size: 26px; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255, 215, 100, 0.6); }
-        #details-panel h2 { font-size: 18px; margin-bottom: 12px; color: #fff; font-family: "Times New Roman", serif; font-style: italic; }
-        #details-panel .symbol { font-size: 44px; margin: 12px 0; text-align: center; text-shadow: 0 0 25px rgba(255, 215, 100, 0.9); }
-        #details-panel .info-row { margin: 10px 0; padding: 8px 0; border-bottom: 1px solid rgba(255, 215, 100, 0.2); font-size: 14px; }
-        #details-panel .label { color: #fff; font-weight: bold; }
-        #details-panel .stars-section { margin: 15px 0; }
-        #details-panel .stars-section h3 { font-size: 15px; margin-bottom: 10px; color: #fff; }
-        #details-panel .stars-section ul { list-style: none; padding-left: 8px; }
-        #details-panel .stars-section li { padding: 6px 0; font-size: 13px; }
-        #details-panel .content-section { margin: 18px 0; }
-        #details-panel .content-section h3 { font-size: 15px; margin-bottom: 8px; color: #fff; }
-        #details-panel .content-section p { line-height: 1.7; font-size: 13px; }
-        #close-btn {
-            position: absolute; top: 10px; right: 12px;
-            background: rgba(255, 215, 100, 0.1); border: 1px solid rgba(255, 215, 100, 0.3);
-            color: #ffd764; font-size: 20px; cursor: pointer;
-            border-radius: 50%; width: 28px; height: 28px;
-            transition: all 0.3s;
+        #details-panel::-webkit-scrollbar { width: 6px; }
+        #details-panel::-webkit-scrollbar-track { background: rgba(255, 215, 100, 0.05); border-radius: 3px; }
+        #details-panel::-webkit-scrollbar-thumb { background: rgba(255, 215, 100, 0.4); border-radius: 3px; }
+        .constellation-img {
+            width: 140px; height: 140px; margin: 15px auto;
+            display: block; border-radius: 50%;
+            border: 3px solid rgba(255, 215, 100, 0.6);
+            box-shadow: 0 0 30px rgba(255, 215, 100, 0.5),
+                        inset 0 0 20px rgba(255, 215, 100, 0.15);
+            background: radial-gradient(circle, rgba(20, 15, 40, 0.9), rgba(5, 5, 15, 0.95));
+            display: flex; align-items: center; justify-content: center;
         }
-        #close-btn:hover { background: rgba(255, 215, 100, 0.2); transform: scale(1.1); }
+        .constellation-img svg { width: 90px; height: 90px; filter: drop-shadow(0 0 10px rgba(255, 215, 100, 0.6)); }
+        #details-panel h1 { font-size: 30px; margin-bottom: 8px; text-shadow: 0 0 20px rgba(255, 215, 100, 0.75); letter-spacing: 3px; }
+        #details-panel h2 { font-size: 20px; margin-bottom: 15px; color: #fff; font-family: "Times New Roman", serif; font-style: italic; letter-spacing: 2px; }
+        #details-panel .symbol { font-size: 52px; margin: 18px 0; text-align: center; text-shadow: 0 0 30px rgba(255, 215, 100, 1), 0 0 60px rgba(255, 180, 80, 0.4); }
+        #details-panel .info-row { margin: 12px 0; padding: 10px 0; border-bottom: 1px solid rgba(255, 215, 100, 0.25); font-size: 16px; }
+        #details-panel .label { color: #fff; font-weight: bold; text-shadow: 0 0 8px rgba(255, 215, 100, 0.4); }
+        #details-panel .stars-section { margin: 18px 0; }
+        #details-panel .stars-section h3 { font-size: 17px; margin-bottom: 12px; color: #fff; text-shadow: 0 0 8px rgba(255, 215, 100, 0.4); }
+        #details-panel .stars-section ul { list-style: none; padding-left: 10px; }
+        #details-panel .stars-section li { padding: 7px 0; font-size: 15px; text-shadow: 0 0 5px rgba(255, 215, 100, 0.3); }
+        #details-panel .content-section { margin: 22px 0; }
+        #details-panel .content-section h3 { font-size: 17px; margin-bottom: 10px; color: #fff; text-shadow: 0 0 8px rgba(255, 215, 100, 0.4); }
+        #details-panel .content-section p { line-height: 1.9; font-size: 15px; text-shadow: 0 0 5px rgba(255, 215, 100, 0.25); }
+        #close-btn {
+            position: absolute; top: 12px; right: 15px;
+            background: rgba(255, 215, 100, 0.15); border: 1px solid rgba(255, 215, 100, 0.45);
+            color: #ffd764; font-size: 22px; cursor: pointer;
+            border-radius: 50%; width: 34px; height: 34px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255, 215, 100, 0.2);
+        }
+        #close-btn:hover { background: rgba(255, 215, 100, 0.25); transform: scale(1.15); box-shadow: 0 0 25px rgba(255, 215, 100, 0.4); }
         #title {
             position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
-            color: #ffd764; font-size: 30px; z-index: 50; pointer-events: none;
-            text-shadow: 0 0 25px rgba(255, 215, 100, 0.6);
+            color: #ffd764; font-size: 34px; z-index: 50; pointer-events: none;
+            text-shadow: 0 0 30px rgba(255, 215, 100, 0.7), 0 0 60px rgba(255, 180, 80, 0.35);
+            letter-spacing: 5px;
         }
         #subtitle {
-            position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
-            color: rgba(255, 215, 100, 0.7); font-size: 15px;
+            position: fixed; top: 75px; left: 50%; transform: translateX(-50%);
+            color: rgba(255, 215, 100, 0.85); font-size: 16px;
             font-family: "Times New Roman", serif; z-index: 50; pointer-events: none;
+            text-shadow: 0 0 15px rgba(255, 215, 100, 0.5);
+            letter-spacing: 3px;
         }
         @media (max-width: 768px) {
-            #details-panel { width: calc(100% - 40px); max-width: none; left: 20px; right: 20px; top: auto; bottom: 20px; transform: none; max-height: 45vh; }
-            #title { font-size: 22px; }
-            #subtitle { font-size: 13px; top: 58px; }
+            #details-panel { width: calc(100% - 40px); max-width: none; left: 20px; right: 20px; top: auto; bottom: 20px; transform: none; max-height: 48vh; }
+            #title { font-size: 24px; }
+            #subtitle { font-size: 14px; top: 62px; }
+            .constellation-img { width: 120px; height: 120px; }
         }
     </style>
 </head>
@@ -83,62 +104,183 @@
              stars:[{cn:'娄宿三',mag:2.0},{cn:'娄宿一',mag:2.6},{cn:'胃宿一',mag:3.6},{cn:'胃宿二',mag:4.5},{cn:'胃宿三',mag:4.6}],
              pattern:[[0,0],[0.4,-0.2],[0.8,-0.1],[0.6,0.3],[1.0,0.2]],
              intro:'白羊座是黄道十二星座之首，代表新生与力量。金羊毛传说使其成为勇气与冒险的象征。',
-             meaning:'象征勇气、进取、领导力和开创精神。'},
+             meaning:'象征勇气、进取、领导力和开创精神。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M25 45 Q15 25 25 15 Q35 5 45 15 L50 20 L55 15 Q65 5 75 15 Q85 25 75 45" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M25 45 Q35 60 50 70 Q65 60 75 45" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <circle cx="35" cy="38" r="3" fill="#fff"/>
+                 <circle cx="65" cy="38" r="3" fill="#fff"/>
+                 <path d="M30 55 Q50 85 50 85 Q50 85 70 55" fill="none" stroke="#ffd764" stroke-width="3"/>
+             </svg>`},
             {id:'taurus',nameCn:'金牛座',nameLat:'Taurus',symbol:'♉',period:'4月20日 - 5月20日',element:'土象',rulingPlanet:'金星',
              stars:[{cn:'毕宿五',mag:0.9},{cn:'五车五',mag:1.7},{cn:'天关',mag:2.9},{cn:'毕宿一',mag:3.2},{cn:'毕宿四',mag:3.8}],
              pattern:[[0,0],[-0.5,0.3],[-0.2,0.8],[0.4,0.5],[0.8,0.2]],
              intro:'金牛座以公牛为象征，毕宿五是其最亮的红巨星，在冬季星空中格外醒目。',
-             meaning:'象征稳健、务实、美感与坚持。'},
+             meaning:'象征稳健、务实、美感与坚持。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <ellipse cx="50" cy="50" rx="28" ry="25" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M22 40 Q10 30 15 20" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M78 40 Q90 30 85 20" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <circle cx="38" cy="45" r="3" fill="#fff"/>
+                 <circle cx="62" cy="45" r="3" fill="#fff"/>
+                 <ellipse cx="50" cy="58" rx="8" ry="5" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M28 60 Q25 75 30 80" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M72 60 Q75 75 70 80" fill="none" stroke="#ffd764" stroke-width="3"/>
+             </svg>`},
             {id:'gemini',nameCn:'双子座',nameLat:'Gemini',symbol:'♊',period:'5月21日 - 6月21日',element:'风象',rulingPlanet:'水星',
              stars:[{cn:'北河二',mag:1.6},{cn:'北河三',mag:1.1},{cn:'井宿三',mag:1.9},{cn:'井宿一',mag:3.0},{cn:'天樽二',mag:3.5}],
              pattern:[[-0.4,-0.5],[-0.4,0.5],[0,0],[0.4,-0.5],[0.4,0.5]],
              intro:'双子座以双胞胎为象征，北河二和北河三是其标志性的两颗亮星。',
-             meaning:'象征沟通、智慧、适应性和多才多艺。'},
+             meaning:'象征沟通、智慧、适应性和多才多艺。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <circle cx="30" cy="30" r="12" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="70" cy="30" r="12" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <line x1="30" y1="42" x2="30" y2="65" stroke="#ffd764" stroke-width="3"/>
+                 <line x1="70" y1="42" x2="70" y2="65" stroke="#ffd764" stroke-width="3"/>
+                 <line x1="20" y1="50" x2="40" y2="50" stroke="#ffd764" stroke-width="3"/>
+                 <line x1="60" y1="50" x2="80" y2="50" stroke="#ffd764" stroke-width="3"/>
+                 <line x1="22" y1="70" x2="38" y2="85" stroke="#ffd764" stroke-width="3"/>
+                 <line x1="62" y1="70" x2="78" y2="85" stroke="#ffd764" stroke-width="3"/>
+                 <line x1="38" y1="70" x2="22" y2="85" stroke="#ffd764" stroke-width="3"/>
+                 <line x1="78" y1="70" x2="62" y2="85" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="26" cy="28" r="2" fill="#fff"/>
+                 <circle cx="34" cy="28" r="2" fill="#fff"/>
+                 <circle cx="66" cy="28" r="2" fill="#fff"/>
+                 <circle cx="74" cy="28" r="2" fill="#fff"/>
+             </svg>`},
             {id:'cancer',nameCn:'巨蟹座',nameLat:'Cancer',symbol:'♋',period:'6月22日 - 7月22日',element:'水象',rulingPlanet:'月亮',
              stars:[{cn:'柳宿增三',mag:3.5},{cn:'鬼宿四',mag:3.9},{cn:'鬼宿一',mag:4.0},{cn:'积尸气',mag:3.9},{cn:'鬼宿二',mag:4.2}],
              pattern:[[0,0],[-0.3,0.4],[0.3,0.4],[-0.1,0.8],[0.1,0.8]],
              intro:'巨蟹座以螃蟹为象征，蜂巢星团是其最著名的深空天体。',
-             meaning:'象征情感、保护、家庭和直觉。'},
+             meaning:'象征情感、保护、家庭和直觉。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <ellipse cx="50" cy="55" rx="28" ry="22" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M22 55 Q10 40 15 30 Q20 25 25 35" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M78 55 Q90 40 85 30 Q80 25 75 35" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M20 65 Q15 80 25 85" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M80 65 Q85 80 75 85" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="40" cy="50" r="3" fill="#fff"/>
+                 <circle cx="60" cy="50" r="3" fill="#fff"/>
+                 <path d="M30 70 Q35 65 40 70 Q45 75 50 70 Q55 65 60 70 Q65 75 70 70" fill="none" stroke="#ffd764" stroke-width="2"/>
+             </svg>`},
             {id:'leo',nameCn:'狮子座',nameLat:'Leo',symbol:'♌',period:'7月23日 - 8月22日',element:'火象',rulingPlanet:'太阳',
              stars:[{cn:'轩辕十四',mag:1.4},{cn:'五帝座一',mag:2.0},{cn:'轩辕十二',mag:2.3},{cn:'轩辕九',mag:2.6},{cn:'轩辕十三',mag:2.9}],
              pattern:[[0,0.8],[-0.3,0.3],[-0.6,0],[-0.3,-0.4],[0.3,0.2]],
              intro:'狮子座是夏季星空中最壮观的星座，轩辕十四被誉为"王者之星"。',
-             meaning:'象征领导、自信、创造力和慷慨。'},
+             meaning:'象征领导、自信、创造力和慷慨。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <circle cx="50" cy="50" r="25" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <circle cx="50" cy="50" r="35" fill="none" stroke="#ffd764" stroke-width="2" stroke-dasharray="5,3"/>
+                 <circle cx="40" cy="45" r="3" fill="#fff"/>
+                 <circle cx="60" cy="45" r="3" fill="#fff"/>
+                 <path d="M40 58 Q50 65 60 58" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M25 35 Q30 20 35 30" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M75 35 Q70 20 65 30" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M50 15 Q55 25 50 30 Q45 25 50 15" fill="none" stroke="#ffd764" stroke-width="3"/>
+             </svg>`},
             {id:'virgo',nameCn:'处女座',nameLat:'Virgo',symbol:'♍',period:'8月23日 - 9月22日',element:'土象',rulingPlanet:'水星',
              stars:[{cn:'角宿一',mag:1.0},{cn:'东上相',mag:2.8},{cn:'角宿二',mag:3.4},{cn:'亢宿一',mag:4.0},{cn:'亢宿二',mag:4.5}],
              pattern:[[0,0.8],[0,0.2],[0.4,0],[0.2,-0.5],[-0.2,-0.3]],
              intro:'处女座是黄道中最大的星座，角宿一发出美丽的蓝白光芒。',
-             meaning:'象征完美、分析、服务和务实。'},
+             meaning:'象征完美、分析、服务和务实。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <ellipse cx="50" cy="35" rx="18" ry="15" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M32 50 Q30 70 35 85" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M68 50 Q70 70 65 85" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M35 55 Q50 60 65 55" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="44" cy="33" r="2" fill="#fff"/>
+                 <circle cx="56" cy="33" r="2" fill="#fff"/>
+                 <path d="M40 25 Q45 15 50 20 Q55 15 60 25" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M45 40 Q50 42 55 40" fill="none" stroke="#ffd764" stroke-width="2"/>
+             </svg>`},
             {id:'libra',nameCn:'天秤座',nameLat:'Libra',symbol:'♎',period:'9月23日 - 10月23日',element:'风象',rulingPlanet:'金星',
              stars:[{cn:'氐宿一',mag:2.6},{cn:'氐宿四',mag:2.7},{cn:'氐宿三',mag:3.3},{cn:'氐宿增一',mag:4.0},{cn:'折威七',mag:3.9}],
              pattern:[[-0.5,0.2],[0,0],[0.5,0.2],[0,0.6],[-0.5,0.8]],
              intro:'天秤座是唯一以无生命物体为象征的黄道星座，代表公正与平衡。',
-             meaning:'象征和谐、审美、公正和外交。'},
+             meaning:'象征和谐、审美、公正和外交。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <line x1="50" y1="10" x2="50" y2="40" stroke="#ffd764" stroke-width="4"/>
+                 <line x1="20" y1="40" x2="80" y2="40" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M25 40 L25 65 Q25 75 35 75 Q45 75 45 65 L45 40" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M55 40 L55 65 Q55 75 65 75 Q75 75 75 65 L75 40" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M45 10 Q50 5 55 10" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="35" cy="55" r="2" fill="#fff"/>
+                 <circle cx="65" cy="55" r="2" fill="#fff"/>
+             </svg>`},
             {id:'scorpio',nameCn:'天蝎座',nameLat:'Scorpio',symbol:'♏',period:'10月24日 - 11月22日',element:'水象',rulingPlanet:'冥王星',
              stars:[{cn:'心宿二',mag:1.1},{cn:'尾宿一',mag:1.6},{cn:'房宿三',mag:2.3},{cn:'尾宿八',mag:2.4},{cn:'心宿三',mag:2.8}],
              pattern:[[0,0.7],[-0.3,0.4],[-0.6,0.1],[-0.4,-0.3],[0.2,-0.6]],
              intro:'天蝎座以蝎子为象征，心宿二是其火红的红超巨星，极为壮观。',
-             meaning:'象征热情、神秘、深刻和转变。'},
+             meaning:'象征热情、神秘、深刻和转变。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <ellipse cx="40" cy="45" rx="20" ry="15" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M60 40 Q75 35 80 50 Q85 65 75 75 Q65 85 55 80" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M55 80 Q60 85 65 75" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="50" cy="42" r="2" fill="#fff"/>
+                 <path d="M20 40 Q10 35 15 25" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M20 40 Q15 45 20 50" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M20 40 Q10 50 15 55" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M25 55 Q20 65 25 70" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M30 55 Q30 65 35 70" fill="none" stroke="#ffd764" stroke-width="3"/>
+             </svg>`},
             {id:'sagittarius',nameCn:'射手座',nameLat:'Sagittarius',symbol:'♐',period:'11月23日 - 12月21日',element:'火象',rulingPlanet:'木星',
              stars:[{cn:'箕宿三',mag:1.8},{cn:'斗宿六',mag:2.1},{cn:'斗宿五',mag:2.6},{cn:'建星一',mag:2.8},{cn:'建星六',mag:3.0}],
              pattern:[[0.5,0.5],[0,0.2],[-0.4,0],[0,-0.5],[0.4,-0.3]],
              intro:'射手座以弓箭手为象征，指向银河系中心，区域内星团星云密布。',
-             meaning:'象征探索、乐观、自由和哲学。'},
+             meaning:'象征探索、乐观、自由和哲学。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M20 80 L70 30" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M70 30 Q80 25 75 35" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M70 30 Q65 20 75 35" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M70 30 L85 15" stroke="#ffd764" stroke-width="4"/>
+                 <circle cx="40" cy="60" r="15" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M30 75 Q40 85 50 75" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="80" cy="20" r="3" fill="#fff"/>
+                 <circle cx="36" cy="56" r="2" fill="#fff"/>
+             </svg>`},
             {id:'capricorn',nameCn:'摩羯座',nameLat:'Capricornus',symbol:'♑',period:'12月22日 - 1月19日',element:'土象',rulingPlanet:'土星',
              stars:[{cn:'牛宿一',mag:3.0},{cn:'牛宿二',mag:3.1},{cn:'女宿一',mag:3.7},{cn:'垒壁阵四',mag:3.8},{cn:'牛宿增六',mag:4.0}],
              pattern:[[0,0.6],[-0.3,0.3],[-0.6,0],[-0.3,-0.4],[0.1,-0.2]],
              intro:'摩羯座以海山羊为象征，是古老而神秘的星座。',
-             meaning:'象征耐心、责任、纪律和抱负。'},
+             meaning:'象征耐心、责任、纪律和抱负。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M30 65 Q40 35 50 30 Q60 25 65 35" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M65 35 Q70 45 65 55" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M65 55 Q60 65 50 60" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M50 60 Q40 70 35 65" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M35 65 Q30 75 25 80 Q20 85 30 88" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M30 88 Q35 90 40 85" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="45" cy="40" r="2" fill="#fff"/>
+                 <path d="M40 30 Q35 20 40 25 Q45 20 40 30" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M55 28 Q50 18 55 23 Q60 18 55 28" fill="none" stroke="#ffd764" stroke-width="3"/>
+             </svg>`},
             {id:'aquarius',nameCn:'水瓶座',nameLat:'Aquarius',symbol:'♒',period:'1月20日 - 2月18日',element:'风象',rulingPlanet:'天王星',
              stars:[{cn:'危宿一',mag:2.9},{cn:'虚宿一',mag:3.0},{cn:'坟墓一',mag:3.3},{cn:'羽林军二十六',mag:3.5},{cn:'鈇鑕一',mag:3.9}],
              pattern:[[-0.4,0.5],[0.4,0.5],[-0.3,0],[-0.3,-0.4],[0.2,-0.3]],
              intro:'水瓶座以持瓶者形象著称，与伽倪墨得斯的神话故事相关。',
-             meaning:'象征独创、博爱、人道主义和理想。'},
+             meaning:'象征独创、博爱、人道主义和理想。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M30 20 Q50 15 70 20 L70 40 Q50 45 30 40 Z" fill="none" stroke="#ffd764" stroke-width="4"/>
+                 <path d="M40 40 L40 50 L35 55 L40 60 L35 65 L40 70 L35 75 L40 80" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M60 40 L60 50 L65 55 L60 60 L65 65 L60 70 L65 75 L60 80" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="40" cy="52" r="2" fill="#fff"/>
+                 <circle cx="60" cy="52" r="2" fill="#fff"/>
+                 <circle cx="50" cy="30" r="3" fill="#fff"/>
+             </svg>`},
             {id:'pisces',nameCn:'双鱼座',nameLat:'Pisces',symbol:'♓',period:'2月19日 - 3月20日',element:'水象',rulingPlanet:'海王星',
              stars:[{cn:'外屏七',mag:3.6},{cn:'右更二',mag:3.6},{cn:'霹雳五',mag:4.0},{cn:'云雨一',mag:4.3},{cn:'奎宿一',mag:4.5}],
              pattern:[[-0.6,0.3],[-0.3,0.1],[0,0.2],[0.3,0],[0.6,0.3]],
              intro:'双鱼座以两条相连的鱼为象征，代表爱与灵性的结合。',
-             meaning:'象征敏感、艺术、直觉和慈悲。'}
+             meaning:'象征敏感、艺术、直觉和慈悲。',
+             svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <ellipse cx="25" cy="30" rx="15" ry="10" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <ellipse cx="75" cy="70" rx="15" ry="10" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M40 30 Q50 50 60 70" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M20 30 Q10 25 15 20 Q10 15 20 20 Q25 15 20 30" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <path d="M80 70 Q90 65 85 60 Q90 55 80 60 Q75 55 80 70" fill="none" stroke="#ffd764" stroke-width="3"/>
+                 <circle cx="22" cy="28" r="2" fill="#fff"/>
+                 <circle cx="78" cy="68" r="2" fill="#fff"/>
+             </svg>`}
         ];
 
         const bgCanvas = document.getElementById('bgCanvas');
@@ -179,77 +321,86 @@
 
         function generateStars() {
             stars = [];
-            const count = Math.floor((W * H) / 2500);
+            const count = Math.floor((W * H) / 2000);
             for (let i = 0; i < count; i++) {
                 stars.push({
                     x: Math.random() * W,
                     y: Math.random() * H,
-                    size: Math.random() * 2.5 + 0.5,
-                    baseAlpha: Math.random() * 0.5 + 0.3,
+                    size: Math.random() * 3 + 0.8,
+                    baseAlpha: Math.random() * 0.6 + 0.35,
                     phase: Math.random() * Math.PI * 2,
-                    speed: Math.random() * 0.03 + 0.01,
-                    twinkleSpeed: Math.random() * 0.05 + 0.02
+                    speed: Math.random() * 0.04 + 0.01,
+                    twinkleSpeed: Math.random() * 0.07 + 0.02
                 });
             }
         }
 
         function drawBackground() {
-            bgCtx.fillStyle = '#050510';
+            // Deep space gradient
+            const bgGrad = bgCtx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H));
+            bgGrad.addColorStop(0, '#0a0a1a');
+            bgGrad.addColorStop(0.4, '#050510');
+            bgGrad.addColorStop(1, '#020208');
+            bgCtx.fillStyle = bgGrad;
             bgCtx.fillRect(0, 0, W, H);
 
             // Draw Milky Way
-            const centerX = (milkyWayOffset + W * 0.3) % (W * 1.5) - W * 0.3;
-            const centerY = H * 0.4;
+            const centerX = (milkyWayOffset + W * 0.25) % (W * 1.6) - W * 0.3;
+            const centerY = H * 0.38;
 
+            // Main galaxy band
             const milkyGradient = bgCtx.createRadialGradient(
                 centerX, centerY, 0,
-                centerX, centerY, W * 0.8
+                centerX, centerY, W * 0.85
             );
-            milkyGradient.addColorStop(0, 'rgba(120, 80, 180, 0.8)');
-            milkyGradient.addColorStop(0.2, 'rgba(80, 50, 140, 0.6)');
-            milkyGradient.addColorStop(0.4, 'rgba(50, 30, 100, 0.4)');
-            milkyGradient.addColorStop(0.6, 'rgba(30, 20, 70, 0.3)');
-            milkyGradient.addColorStop(0.8, 'rgba(20, 15, 50, 0.2)');
+            milkyGradient.addColorStop(0, 'rgba(140, 90, 200, 0.85)');
+            milkyGradient.addColorStop(0.15, 'rgba(100, 60, 160, 0.7)');
+            milkyGradient.addColorStop(0.35, 'rgba(70, 40, 120, 0.5)');
+            milkyGradient.addColorStop(0.55, 'rgba(50, 25, 80, 0.35)');
+            milkyGradient.addColorStop(0.75, 'rgba(30, 15, 50, 0.2)');
             milkyGradient.addColorStop(1, 'rgba(5, 5, 16, 0)');
 
             bgCtx.fillStyle = milkyGradient;
             bgCtx.fillRect(0, 0, W, H);
 
-            // Additional galaxy bands
-            for (let i = 0; i < 3; i++) {
-                const bandY = centerY + (i - 1) * H * 0.15;
-                const bandGradient = bgCtx.createLinearGradient(0, bandY - H * 0.1, 0, bandY + H * 0.1);
-                bandGradient.addColorStop(0, 'rgba(60, 40, 120, 0)');
-                bandGradient.addColorStop(0.5, `rgba(80, 50, 160, ${0.15 - i * 0.03})`);
-                bandGradient.addColorStop(1, 'rgba(60, 40, 120, 0)');
-                bgCtx.fillStyle = bandGradient;
-                bgCtx.fillRect(0, bandY - H * 0.1, W, H * 0.2);
+            // Additional sparkling galaxy layers
+            for (let i = 0; i < 4; i++) {
+                const bandY = centerY + (i - 1.5) * H * 0.12;
+                const bandGrad = bgCtx.createLinearGradient(0, bandY - H * 0.12, 0, bandY + H * 0.12);
+                bandGrad.addColorStop(0, 'rgba(70, 45, 130, 0)');
+                bandGrad.addColorStop(0.5, `rgba(100, 60, 180, ${0.18 - i * 0.03})`);
+                bandGrad.addColorStop(1, 'rgba(70, 45, 130, 0)');
+                bgCtx.fillStyle = bandGrad;
+                bgCtx.fillRect(0, bandY - H * 0.12, W, H * 0.24);
             }
 
-            milkyWayOffset += 0.5;
-            if (milkyWayOffset > W * 0.8) milkyWayOffset = 0;
+            milkyWayOffset += 0.6;
+            if (milkyWayOffset > W * 0.85) milkyWayOffset = 0;
 
-            // Draw stars
+            // Draw stars with sparkling effect
             stars.forEach(star => {
                 const twinkle = Math.sin(animationTime * star.twinkleSpeed + star.phase);
-                const alpha = star.baseAlpha + twinkle * 0.3;
-                const size = star.size * (1 + twinkle * 0.15);
+                const alpha = star.baseAlpha + twinkle * 0.35;
+                const size = star.size * (1 + twinkle * 0.2);
 
-                const glowGradient = bgCtx.createRadialGradient(
-                    star.x, star.y, 0, star.x, star.y, size * 4
+                // Outer glow
+                const glowGrad = bgCtx.createRadialGradient(
+                    star.x, star.y, 0, star.x, star.y, size * 5
                 );
-                glowGradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
-                glowGradient.addColorStop(0.3, `rgba(220, 220, 255, ${alpha * 0.5})`);
-                glowGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                glowGrad.addColorStop(0, `rgba(255, 250, 220, ${alpha})`);
+                glowGrad.addColorStop(0.3, `rgba(255, 220, 150, ${alpha * 0.5})`);
+                glowGrad.addColorStop(0.6, `rgba(200, 150, 255, ${alpha * 0.3})`);
+                glowGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
                 bgCtx.beginPath();
-                bgCtx.arc(star.x, star.y, size * 4, 0, Math.PI * 2);
-                bgCtx.fillStyle = glowGradient;
+                bgCtx.arc(star.x, star.y, size * 5, 0, Math.PI * 2);
+                bgCtx.fillStyle = glowGrad;
                 bgCtx.fill();
 
+                // Core
                 bgCtx.beginPath();
                 bgCtx.arc(star.x, star.y, size, 0, Math.PI * 2);
-                bgCtx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                bgCtx.fillStyle = `rgba(255, 250, 230, ${alpha})`;
                 bgCtx.fill();
             });
         }
@@ -317,28 +468,33 @@
                 mainCtx.lineWidth = 2.5 * finalScale;
                 mainCtx.stroke();
 
-                // Draw stars in pattern
+                // Draw stars in pattern with sparkling
                 constellation.pattern.forEach((pt, i) => {
                     const px = proj.x + pt[0] * constellationSize;
                     const py = proj.y + pt[1] * constellationSize;
                     const starInfo = constellation.stars[i];
                     const starSize = starInfo ? Math.max(2, (5 - starInfo.mag * 0.5) * finalScale) : 2.5 * finalScale;
 
+                    // Sparkle effect
+                    const twinkle = Math.sin(animationTime * (0.1 + i * 0.02));
+                    const glowSize = starSize * (6 + twinkle * 2);
+
                     // Glow effect
-                    const glowGradient = mainCtx.createRadialGradient(px, py, 0, px, py, starSize * 5);
-                    glowGradient.addColorStop(0, `${baseColor}1)`);
-                    glowGradient.addColorStop(0.3, `${baseColor}0.7)`);
-                    glowGradient.addColorStop(1, `${baseColor}0)`);
+                    const glowGrad = mainCtx.createRadialGradient(px, py, 0, px, py, glowSize);
+                    glowGrad.addColorStop(0, `${baseColor}1)`);
+                    glowGrad.addColorStop(0.3, `${baseColor}0.7)`);
+                    glowGrad.addColorStop(0.6, 'rgba(200, 150, 255, 0.3)');
+                    glowGrad.addColorStop(1, `${baseColor}0)`);
 
                     mainCtx.beginPath();
-                    mainCtx.arc(px, py, starSize * 5, 0, Math.PI * 2);
-                    mainCtx.fillStyle = glowGradient;
+                    mainCtx.arc(px, py, glowSize, 0, Math.PI * 2);
+                    mainCtx.fillStyle = glowGrad;
                     mainCtx.fill();
 
                     // Core
                     mainCtx.beginPath();
                     mainCtx.arc(px, py, starSize, 0, Math.PI * 2);
-                    mainCtx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                    mainCtx.fillStyle = `rgba(255, 250, 220, ${alpha})`;
                     mainCtx.fill();
                 });
             }
@@ -493,6 +649,7 @@
             targetScale = 1.7;
 
             detailsContent.innerHTML = `
+                <div class="constellation-img">${data.svg}</div>
                 <h1>${data.nameCn}</h1>
                 <h2>${data.nameLat}</h2>
                 <div class="symbol">${data.symbol}</div>
