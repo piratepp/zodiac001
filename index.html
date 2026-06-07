@@ -1,0 +1,839 @@
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;黄道十二星座&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: "SimSun", "Times New Roman", serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #0a0a1a, #1a1a3a, #0a0a1a);
+            cursor: grab;
+        }
+
+        body:active {
+            cursor: grabbing;
+        }
+
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        #details-panel {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 320px;
+            max-width: 40vw;
+            max-height: 80vh;
+            background: rgba(10, 10, 30, 0.85);
+            border: 2px solid rgba(255, 215, 100, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            color: #ffd764;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            overflow-y: auto;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(255, 215, 100, 0.2);
+        }
+
+        #details-panel.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #details-panel h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255, 215, 100, 0.5);
+        }
+
+        #details-panel h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #fff;
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+        }
+
+        #details-panel .symbol {
+            font-size: 48px;
+            margin: 15px 0;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 215, 100, 0.8);
+        }
+
+        #details-panel .info-row {
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 100, 0.2);
+        }
+
+        #details-panel .label {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        #details-panel .stars-list {
+            margin: 15px 0;
+        }
+
+        #details-panel .stars-list h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        #details-panel .stars-list ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        #details-panel .stars-list li {
+            padding: 5px 0;
+            font-size: 14px;
+        }
+
+        #details-panel .section {
+            margin: 20px 0;
+        }
+
+        #details-panel .section h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        #details-panel .section p {
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        #close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #ffd764;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        #close-btn:hover {
+            opacity: 1;
+        }
+
+        #title {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd764;
+            font-size: 32px;
+            text-shadow: 0 0 20px rgba(255, 215, 100, 0.5);
+            z-index: 50;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        #subtitle {
+            position: fixed;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 215, 100, 0.7);
+            font-size: 16px;
+            font-family: "Times New Roman", serif;
+            z-index: 50;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            #details-panel {
+                width: calc(100% - 40px);
+                max-width: none;
+                left: 20px;
+                right: 20px;
+                top: auto;
+                bottom: 20px;
+                transform: none;
+                max-height: 40vh;
+            }
+
+            #title {
+                font-size: 24px;
+                top: 20px;
+            }
+
+            #subtitle {
+                font-size: 14px;
+                top: 55px;
+            }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;canvas id="bgCanvas"&gt;&lt;/canvas&gt;
+    &lt;canvas id="mainCanvas"&gt;&lt;/canvas&gt;
+
+    &lt;div id="title"&gt;黄道十二星座&lt;/div&gt;
+    &lt;div id="subtitle"&gt;The Twelve Zodiac Constellations&lt;/div&gt;
+
+    &lt;div id="details-panel"&gt;
+        &lt;button id="close-btn"&gt;&amp;times;&lt;/button&gt;
+        &lt;div id="details-content"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        const zodiacData = [
+            {
+                id: 'aries',
+                nameCn: '白羊座',
+                nameLat: 'Aries',
+                symbol: '♈',
+                period: '3月21日 - 4月19日',
+                element: '火象星座',
+                rulingPlanet: '火星',
+                stars: [
+                    { nameCn: '娄宿三', mag: 2.0 },
+                    { nameCn: '娄宿一', mag: 2.6 },
+                    { nameCn: '昴宿增十二', mag: 2.9 },
+                    { nameCn: '胃宿一', mag: 3.6 },
+                    { nameCn: '胃宿二', mag: 4.5 }
+                ],
+                starPattern: [
+                    { x: 0, y: 0 }, { x: 0.5, y: -0.3 }, { x: 1, y: -0.5 },
+                    { x: 0.8, y: -0.2 }, { x: 1.2, y: 0.2 }
+                ],
+                intro: '白羊座是黄道十二星座的第一个星座，代表着新的开始和初生的力量。在希腊神话中，白羊座与金羊毛的传说有关，象征着勇气和冒险精神。',
+                meaning: '白羊座象征着勇气、活力、开创性和领导能力。白羊座的人通常充满热情，敢于迎接挑战，具有强烈的进取心和行动力。'
+            },
+            {
+                id: 'taurus',
+                nameCn: '金牛座',
+                nameLat: 'Taurus',
+                symbol: '♉',
+                period: '4月20日 - 5月20日',
+                element: '土象星座',
+                rulingPlanet: '金星',
+                stars: [
+                    { nameCn: '毕宿五', mag: 0.9 },
+                    { nameCn: '五车五', mag: 1.7 },
+                    { nameCn: '天关', mag: 2.9 },
+                    { nameCn: '毕宿一', mag: 3.2 },
+                    { nameCn: '毕宿二', mag: 4.3 }
+                ],
+                starPattern: [
+                    { x: 0, y: 0 }, { x: -0.3, y: 0.5 }, { x: -0.5, y: 1 },
+                    { x: 0.3, y: 0.6 }, { x: 0.6, y: 0.3 }
+                ],
+                intro: '金牛座是黄道十二星座的第二个星座，以公牛为象征。金牛座包含了明亮的红巨星毕宿五，是冬季星空中的显著星座。',
+                meaning: '金牛座象征着稳定、耐心、物质享受和美感。金牛座的人通常可靠、务实，善于理财，对美的事物有独特的鉴赏力。'
+            },
+            {
+                id: 'gemini',
+                nameCn: '双子座',
+                nameLat: 'Gemini',
+                symbol: '♊',
+                period: '5月21日 - 6月21日',
+                element: '风象星座',
+                rulingPlanet: '水星',
+                stars: [
+                    { nameCn: '北河二', mag: 1.6 },
+                    { nameCn: '北河三', mag: 1.1 },
+                    { nameCn: '井宿三', mag: 1.9 },
+                    { nameCn: '积薪', mag: 2.9 },
+                    { nameCn: '井宿一', mag: 3.0 }
+                ],
+                starPattern: [
+                    { x: -0.3, y: -0.5 }, { x: -0.3, y: 0.5 },
+                    { x: 0.3, y: -0.5 }, { x: 0.3, y: 0.5 },
+                    { x: 0, y: 0 }
+                ],
+                intro: '双子座以双胞胎为象征，代表着双重性格和多样性。北河二和北河三是双子座最明亮的两颗星，象征着卡斯托尔和波吕丢刻斯这对神话中的双胞胎。',
+                meaning: '双子座象征着沟通、智慧、适应性和好奇心。双子座的人通常思维敏捷，善于交流，对新事物充满好奇，具有多才多艺的特点。'
+            },
+            {
+                id: 'cancer',
+                nameCn: '巨蟹座',
+                nameLat: 'Cancer',
+                symbol: '♋',
+                period: '6月22日 - 7月22日',
+                element: '水象星座',
+                rulingPlanet: '月亮',
+                stars: [
+                    { nameCn: '柳宿增三', mag: 3.5 },
+                    { nameCn: '鬼宿四', mag: 3.9 },
+                    { nameCn: '鬼宿一', mag: 4.0 },
+                    { nameCn: '积尸气', mag: 3.9 },
+                    { nameCn: '鬼宿二', mag: 4.2 }
+                ],
+                starPattern: [
+                    { x: 0, y: 0 }, { x: -0.4, y: 0.3 }, { x: -0.3, y: 0.6 },
+                    { x: 0.3, y: 0.6 }, { x: 0.4, y: 0.3 }
+                ],
+                intro: '巨蟹座以螃蟹为象征，在希腊神话中与赫拉克勒斯的十二试炼有关。巨蟹座包含了著名的鬼星团（M44），又称蜂巢星团。',
+                meaning: '巨蟹座象征着情感、家庭、保护和同情心。巨蟹座的人通常情感丰富，重视家庭，具有强烈的保护欲和 nurturing 的天性。'
+            },
+            {
+                id: 'leo',
+                nameCn: '狮子座',
+                nameLat: 'Leo',
+                symbol: '♌',
+                period: '7月23日 - 8月22日',
+                element: '火象星座',
+                rulingPlanet: '太阳',
+                stars: [
+                    { nameCn: '轩辕十四', mag: 1.4 },
+                    { nameCn: '五帝座一', mag: 2.0 },
+                    { nameCn: '轩辕十二', mag: 2.3 },
+                    { nameCn: '轩辕九', mag: 2.6 },
+                    { nameCn: '轩辕十三', mag: 2.9 }
+                ],
+                starPattern: [
+                    { x: 0, y: 0.8 }, { x: -0.3, y: 0.4 }, { x: -0.5, y: 0 },
+                    { x: -0.4, y: -0.4 }, { x: 0.3, y: 0.2 }
+                ],
+                intro: '狮子座以狮子为象征，是夏季星空中最壮观的星座之一。轩辕十四是狮子座最亮的星，也是全天第21亮星，被称为"王者之星"。',
+                meaning: '狮子座象征着领导力、自信、创造力和慷慨。狮子座的人通常具有天生的领导才能，自信大方，喜欢成为焦点，乐于助人。'
+            },
+            {
+                id: 'virgo',
+                nameCn: '处女座',
+                nameLat: 'Virgo',
+                symbol: '♍',
+                period: '8月23日 - 9月22日',
+                element: '土象星座',
+                rulingPlanet: '水星',
+                stars: [
+                    { nameCn: '角宿一', mag: 1.0 },
+                    { nameCn: '东上相', mag: 2.8 },
+                    { nameCn: '角宿二', mag: 3.4 },
+                    { nameCn: '亢宿一', mag: 4.0 },
+                    { nameCn: '亢宿二', mag: 4.5 }
+                ],
+                starPattern: [
+                    { x: 0, y: 0.8 }, { x: 0, y: 0 }, { x: 0.3, y: -0.3 },
+                    { x: -0.3, y: -0.5 }, { x: 0.5, y: -0.7 }
+                ],
+                intro: '处女座以处女或谷神为象征，是黄道十二星座中最大的星座。角宿一是全天第16亮星，发出美丽的蓝白色光芒。',
+                meaning: '处女座象征着完美主义、分析能力、服务精神和实用性。处女座的人通常细心、有条理，追求完美，乐于助人，善于分析和解决问题。'
+            },
+            {
+                id: 'libra',
+                nameCn: '天秤座',
+                nameLat: 'Libra',
+                symbol: '♎',
+                period: '9月23日 - 10月23日',
+                element: '风象星座',
+                rulingPlanet: '金星',
+                stars: [
+                    { nameCn: '氐宿一', mag: 2.6 },
+                    { nameCn: '氐宿四', mag: 2.7 },
+                    { nameCn: '氐宿三', mag: 3.3 },
+                    { nameCn: '亢宿增七', mag: 3.5 },
+                    { nameCn: '折威七', mag: 3.9 }
+                ],
+                starPattern: [
+                    { x: -0.4, y: 0 }, { x: 0, y: 0.3 }, { x: 0.4, y: 0 },
+                    { x: 0, y: -0.3 }, { x: 0, y: 0 }
+                ],
+                intro: '天秤座以天平为象征，是唯一以无生命物体为象征的黄道星座。在古代，天秤座曾被视为天蝎座的一部分，代表天蝎的爪子。',
+                meaning: '天秤座象征着平衡、和谐、公正和美感。天秤座的人通常追求和谐，善于调解，重视公正，对美和艺术有独特的品味。'
+            },
+            {
+                id: 'scorpio',
+                nameCn: '天蝎座',
+                nameLat: 'Scorpio',
+                symbol: '♏',
+                period: '10月24日 - 11月22日',
+                element: '水象星座',
+                rulingPlanet: '冥王星',
+                stars: [
+                    { nameCn: '心宿二', mag: 1.1 },
+                    { nameCn: '尾宿一', mag: 1.6 },
+                    { nameCn: '房宿三', mag: 2.3 },
+                    { nameCn: '尾宿八', mag: 2.4 },
+                    { nameCn: '心宿三', mag: 2.8 }
+                ],
+                starPattern: [
+                    { x: 0, y: 0.6 }, { x: -0.3, y: 0.3 }, { x: -0.4, y: 0 },
+                    { x: -0.2, y: -0.4 }, { x: 0.3, y: -0.6 }
+                ],
+                intro: '天蝎座以蝎子为象征，是夏季星空中最引人注目的星座之一。心宿二又称"大火"，是一颗红超巨星，发出火红的光芒，是全天第15亮星。',
+                meaning: '天蝎座象征着深度、热情、神秘和转变。天蝎座的人通常情感深沉，直觉敏锐，具有强大的意志力和蜕变的能力。'
+            },
+            {
+                id: 'sagittarius',
+                nameCn: '射手座',
+                nameLat: 'Sagittarius',
+                symbol: '♐',
+                period: '11月23日 - 12月21日',
+                element: '火象星座',
+                rulingPlanet: '木星',
+                stars: [
+                    { nameCn: '箕宿三', mag: 1.8 },
+                    { nameCn: '斗宿六', mag: 2.1 },
+                    { nameCn: '斗宿五', mag: 2.6 },
+                    { nameCn: '建星一', mag: 2.8 },
+                    { nameCn: '建星二', mag: 3.0 }
+                ],
+                starPattern: [
+                    { x: 0.5, y: 0.5 }, { x: 0, y: 0.3 }, { x: -0.3, y: 0 },
+                    { x: -0.2, y: -0.4 }, { x: 0.3, y: -0.3 }
+                ],
+                intro: '射手座以人马座的弓箭手为象征，指向银河中心。射手座位于银河系最繁华的区域，包含了大量的星团、星云和其他天体。',
+                meaning: '射手座象征着冒险、自由、哲学和乐观。射手座的人通常热爱自由，喜欢探索，具有开阔的视野和乐观的人生态度。'
+            },
+            {
+                id: 'capricorn',
+                nameCn: '摩羯座',
+                nameLat: 'Capricornus',
+                symbol: '♑',
+                period: '12月22日 - 1月19日',
+                element: '土象星座',
+                rulingPlanet: '土星',
+                stars: [
+                    { nameCn: '牛宿一', mag: 3.0 },
+                    { nameCn: '牛宿二', mag: 3.1 },
+                    { nameCn: '女宿一', mag: 3.7 },
+                    { nameCn: '垒壁阵四', mag: 3.8 },
+                    { nameCn: '牛宿增六', mag: 4.0 }
+                ],
+                starPattern: [
+                    { x: 0, y: 0.6 }, { x: -0.3, y: 0.3 }, { x: -0.5, y: 0 },
+                    { x: -0.3, y: -0.3 }, { x: 0.2, y: -0.2 }
+                ],
+                intro: '摩羯座以海山羊为象征，是一个上半身是山羊、下半身是鱼的神话生物。摩羯座是冬季星空中的一个较暗淡的星座。',
+                meaning: '摩羯座象征着自律、责任、野心和坚韧。摩羯座的人通常踏实可靠，有强烈的责任感，为实现目标而不懈努力。'
+            },
+            {
+                id: 'aquarius',
+                nameCn: '水瓶座',
+                nameLat: 'Aquarius',
+                symbol: '♒',
+                period: '1月20日 - 2月18日',
+                element: '风象星座',
+                rulingPlanet: '天王星',
+                stars: [
+                    { nameCn: '危宿一', mag: 2.9 },
+                    { nameCn: '虚宿一', mag: 3.0 },
+                    { nameCn: '坟墓一', mag: 3.3 },
+                    { nameCn: '羽林军二十六', mag: 3.5 },
+                    { nameCn: '坟墓二', mag: 3.9 }
+                ],
+                starPattern: [
+                    { x: -0.3, y: 0.5 }, { x: 0.3, y: 0.5 },
+                    { x: -0.4, y: 0 }, { x: 0.4, y: 0 },
+                    { x: 0, y: -0.5 }
+                ],
+                intro: '水瓶座以持瓶倒水的人为象征，在希腊神话中与美少年伽倪墨得斯有关。水瓶座位于秋季星空中，包含了几个有趣的深空天体。',
+                meaning: '水瓶座象征着创新、独立、人道主义和理想主义。水瓶座的人通常思想超前，特立独行，关心社会，追求理想和进步。'
+            },
+            {
+                id: 'pisces',
+                nameCn: '双鱼座',
+                nameLat: 'Pisces',
+                symbol: '♓',
+                period: '2月19日 - 3月20日',
+                element: '水象星座',
+                rulingPlanet: '海王星',
+                stars: [
+                    { nameCn: '外屏七', mag: 3.6 },
+                    { nameCn: '右更二', mag: 3.6 },
+                    { nameCn: '霹雳五', mag: 4.0 },
+                    { nameCn: '云雨一', mag: 4.3 },
+                    { nameCn: '奎宿一', mag: 4.5 }
+                ],
+                starPattern: [
+                    { x: -0.5, y: 0.3 }, { x: -0.3, y: 0 }, { x: 0, y: -0.2 },
+                    { x: 0.3, y: 0 }, { x: 0.5, y: 0.3 }
+                ],
+                intro: '双鱼座以两条鱼为象征，两条鱼被一条丝带系在一起，向相反方向游去。在希腊神话中，双鱼座与爱神阿佛洛狄忒和她的儿子厄洛斯有关。',
+                meaning: '双鱼座象征着直觉、同情、艺术和灵性。双鱼座的人通常富有想象力，敏感细腻，具有艺术天赋和深厚的同情心。'
+            }
+        ];
+
+        const bgCanvas = document.getElementById('bgCanvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        const mainCanvas = document.getElementById('mainCanvas');
+        const mainCtx = mainCanvas.getContext('2d');
+        const detailsPanel = document.getElementById('details-panel');
+        const detailsContent = document.getElementById('details-content');
+        const closeBtn = document.getElementById('close-btn');
+
+        let width, height;
+        let stars = [];
+        let milkyWayOffset = 0;
+        let rotationY = 0;
+        let targetRotationY = 0;
+        let rotationVelocity = 0;
+        let isDragging = false;
+        let lastMouseX = 0;
+        let selectedConstellation = null;
+        let selectedScale = 1;
+        let targetScale = 1;
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            bgCanvas.width = width;
+            bgCanvas.height = height;
+            mainCanvas.width = width;
+            mainCanvas.height = height;
+            generateStars();
+        }
+
+        function generateStars() {
+            stars = [];
+            const numStars = Math.floor((width * height) / 3000);
+            for (let i = 0; i &lt; numStars; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: Math.random() * 2 + 0.5,
+                    baseAlpha: Math.random() * 0.5 + 0.3,
+                    phase: Math.random() * Math.PI * 2,
+                    speed: Math.random() * 0.02 + 0.01
+                });
+            }
+        }
+
+        function drawBackground(time) {
+            bgCtx.fillStyle = '#0a0a1a';
+            bgCtx.fillRect(0, 0, width, height);
+
+            const gradient = bgCtx.createLinearGradient(
+                milkyWayOffset - width * 0.5, 0,
+                milkyWayOffset + width * 1.5, 0
+            );
+            gradient.addColorStop(0, 'rgba(10, 10, 30, 0)');
+            gradient.addColorStop(0.3, 'rgba(30, 20, 60, 0.4)');
+            gradient.addColorStop(0.5, 'rgba(60, 40, 100, 0.6)');
+            gradient.addColorStop(0.7, 'rgba(30, 20, 60, 0.4)');
+            gradient.addColorStop(1, 'rgba(10, 10, 30, 0)');
+
+            bgCtx.fillStyle = gradient;
+            bgCtx.fillRect(0, 0, width, height);
+
+            milkyWayOffset += 0.2;
+            if (milkyWayOffset &gt; width) milkyWayOffset = 0;
+
+            stars.forEach(star =&gt; {
+                const alpha = star.baseAlpha + Math.sin(time * star.speed + star.phase) * 0.3;
+                bgCtx.beginPath();
+                bgCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                bgCtx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                bgCtx.fill();
+            });
+        }
+
+        function project3D(x, y, z, rotY) {
+            const cosY = Math.cos(rotY);
+            const sinY = Math.sin(rotY);
+            const newX = x * cosY - z * sinY;
+            const newZ = x * sinY + z * cosY;
+
+            const fov = 600;
+            const scale = fov / (fov + newZ);
+
+            return {
+                x: width / 2 + newX * scale,
+                y: height / 2 + y * scale * 0.6,
+                scale: scale,
+                z: newZ
+            };
+        }
+
+        function drawConstellation(data, angle, time, isSelected) {
+            const radius = Math.min(width, height) * 0.35;
+            const x = Math.cos(angle) * radius;
+            const z = Math.sin(angle) * radius;
+
+            const scaleMultiplier = isSelected ? selectedScale : 1;
+
+            const projected = project3D(x, 0, z, rotationY);
+            const baseScale = projected.scale * scaleMultiplier;
+
+            if (projected.z &lt; -400) return { projected, inFront: false };
+
+            const size = 30 * baseScale;
+            const textSize = 14 * baseScale;
+
+            const starColor = `rgba(255, 215, 100, ${Math.min(1, baseScale * 0.8)})`;
+
+            mainCtx.beginPath();
+            data.starPattern.forEach((p, i) =&gt; {
+                const px = projected.x + p.x * size * 1.5;
+                const py = projected.y + p.y * size * 1.5;
+                if (i === 0) mainCtx.moveTo(px, py);
+                else mainCtx.lineTo(px, py);
+            });
+            mainCtx.strokeStyle = `rgba(255, 215, 100, ${Math.min(0.5, baseScale * 0.4)})`;
+            mainCtx.lineWidth = 1 * baseScale;
+            mainCtx.stroke();
+
+            data.starPattern.forEach((p, i) =&gt; {
+                const px = projected.x + p.x * size * 1.5;
+                const py = projected.y + p.y * size * 1.5;
+                const starSize = (data.stars[i] ? 3 - data.stars[i].mag * 0.3 : 2) * baseScale;
+
+                const glowGradient = mainCtx.createRadialGradient(px, py, 0, px, py, starSize * 3);
+                glowGradient.addColorStop(0, starColor);
+                glowGradient.addColorStop(0.5, `rgba(255, 215, 100, 0.3)`);
+                glowGradient.addColorStop(1, `rgba(255, 215, 100, 0)`);
+
+                mainCtx.beginPath();
+                mainCtx.arc(px, py, starSize * 3, 0, Math.PI * 2);
+                mainCtx.fillStyle = glowGradient;
+                mainCtx.fill();
+
+                mainCtx.beginPath();
+                mainCtx.arc(px, py, Math.max(1, starSize), 0, Math.PI * 2);
+                mainCtx.fillStyle = '#fff';
+                mainCtx.fill();
+            });
+
+            if (baseScale &gt; 0.3) {
+                mainCtx.font = `${textSize}px SimSun, serif`;
+                mainCtx.fillStyle = starColor;
+                mainCtx.textAlign = 'center';
+                mainCtx.fillText(data.nameCn, projected.x, projected.y + size * 2);
+
+                mainCtx.font = `${textSize * 0.8}px Times New Roman, serif`;
+                mainCtx.fillStyle = `rgba(255, 255, 255, ${Math.min(0.8, baseScale * 0.7)})`;
+                mainCtx.fillText(data.nameLat, projected.x, projected.y + size * 2 + textSize + 5);
+            }
+
+            return {
+                projected,
+                inFront: projected.z &gt; -300,
+                hitArea: {
+                    x: projected.x - size * 2,
+                    y: projected.y - size * 2,
+                    w: size * 4,
+                    h: size * 4 + textSize * 3
+                },
+                z: projected.z
+            };
+        }
+
+        function drawMain(time) {
+            mainCtx.clearRect(0, 0, width, height);
+
+            const drawOrder = [];
+
+            zodiacData.forEach((data, i) =&gt; {
+                const angle = (i / zodiacData.length) * Math.PI * 2 - Math.PI / 2;
+                const radius = Math.min(width, height) * 0.35;
+                const x = Math.cos(angle) * radius;
+                const z = Math.sin(angle) * radius;
+                const projected = project3D(x, 0, z, rotationY);
+
+                drawOrder.push({
+                    data,
+                    i,
+                    z: projected.z
+                });
+            });
+
+            drawOrder.sort((a, b) =&gt; a.z - b.z);
+
+            const hitAreas = [];
+
+            drawOrder.forEach(item =&gt; {
+                const angle = (item.i / zodiacData.length) * Math.PI * 2 - Math.PI / 2;
+                const result = drawConstellation(
+                    item.data,
+                    angle,
+                    time,
+                    selectedConstellation === item.data.id
+                );
+                if (result &amp;&amp; result.inFront &amp;&amp; result.hitArea) {
+                    hitAreas.push({
+                        ...result.hitArea,
+                        id: item.data.id,
+                        z: result.z
+                    });
+                }
+            });
+
+            return hitAreas;
+        }
+
+        let currentHitAreas = [];
+
+        function animate(time) {
+            time *= 0.001;
+
+            drawBackground(time);
+
+            if (!isDragging) {
+                rotationVelocity *= 0.98;
+                targetRotationY += rotationVelocity;
+            }
+
+            rotationY += (targetRotationY - rotationY) * 0.1;
+
+            if (selectedConstellation) {
+                selectedScale += (targetScale - selectedScale) * 0.1;
+            }
+
+            currentHitAreas = drawMain(time);
+
+            requestAnimationFrame(animate);
+        }
+
+        function getEventPos(e) {
+            if (e.touches) {
+                return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+            return { x: e.clientX, y: e.clientY };
+        }
+
+        function handleStart(e) {
+            isDragging = true;
+            const pos = getEventPos(e);
+            lastMouseX = pos.x;
+        }
+
+        function handleMove(e) {
+            const pos = getEventPos(e);
+
+            if (isDragging) {
+                const deltaX = pos.x - lastMouseX;
+                rotationVelocity = deltaX * 0.005;
+                targetRotationY += rotationVelocity;
+                lastMouseX = pos.x;
+            }
+
+            let hovered = false;
+            const sortedHits = [...currentHitAreas].sort((a, b) =&gt; b.z - a.z);
+            for (const hit of sortedHits) {
+                if (pos.x &gt;= hit.x &amp;&amp; pos.x &lt;= hit.x + hit.w &amp;&amp;
+                    pos.y &gt;= hit.y &amp;&amp; pos.y &lt;= hit.y + hit.h) {
+                    document.body.style.cursor = 'pointer';
+                    hovered = true;
+                    break;
+                }
+            }
+            if (!hovered) {
+                document.body.style.cursor = isDragging ? 'grabbing' : 'grab';
+            }
+        }
+
+        function handleEnd(e) {
+            isDragging = false;
+        }
+
+        function handleClick(e) {
+            if (Math.abs(rotationVelocity) &gt; 0.01) return;
+
+            const pos = getEventPos(e);
+            const sortedHits = [...currentHitAreas].sort((a, b) =&gt; b.z - a.z);
+
+            for (const hit of sortedHits) {
+                if (pos.x &gt;= hit.x &amp;&amp; pos.x &lt;= hit.x + hit.w &amp;&amp;
+                    pos.y &gt;= hit.y &amp;&amp; pos.y &lt;= hit.y + hit.h) {
+                    selectConstellation(hit.id);
+                    return;
+                }
+            }
+        }
+
+        function selectConstellation(id) {
+            selectedConstellation = id;
+            targetScale = 1.8;
+
+            const data = zodiacData.find(d =&gt; d.id === id);
+            if (!data) return;
+
+            detailsContent.innerHTML = `
+                &lt;h1&gt;${data.nameCn}&lt;/h1&gt;
+                &lt;h2&gt;${data.nameLat}&lt;/h2&gt;
+                &lt;div class="symbol"&gt;${data.symbol}&lt;/div&gt;
+                &lt;div class="info-row"&gt;
+                    &lt;span class="label"&gt;日期：&lt;/span&gt;${data.period}
+                &lt;/div&gt;
+                &lt;div class="info-row"&gt;
+                    &lt;span class="label"&gt;元素：&lt;/span&gt;${data.element}
+                &lt;/div&gt;
+                &lt;div class="info-row"&gt;
+                    &lt;span class="label"&gt;守护星：&lt;/span&gt;${data.rulingPlanet}
+                &lt;/div&gt;
+                &lt;div class="stars-list"&gt;
+                    &lt;h3&gt;主要恒星&lt;/h3&gt;
+                    &lt;ul&gt;
+                        ${data.stars.map(s =&gt; `&lt;li&gt;${s.nameCn} (视星等 ${s.mag})&lt;/li&gt;`).join('')}
+                    &lt;/ul&gt;
+                &lt;/div&gt;
+                &lt;div class="section"&gt;
+                    &lt;h3&gt;简介&lt;/h3&gt;
+                    &lt;p&gt;${data.intro}&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div class="section"&gt;
+                    &lt;h3&gt;寓意&lt;/h3&gt;
+                    &lt;p&gt;${data.meaning}&lt;/p&gt;
+                &lt;/div&gt;
+            `;
+
+            detailsPanel.classList.add('visible');
+        }
+
+        function closeDetails() {
+            detailsPanel.classList.remove('visible');
+            selectedConstellation = null;
+            targetScale = 1;
+        }
+
+        mainCanvas.addEventListener('mousedown', handleStart);
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+        mainCanvas.addEventListener('click', handleClick);
+
+        mainCanvas.addEventListener('touchstart', (e) =&gt; { e.preventDefault(); handleStart(e); });
+        window.addEventListener('touchmove', (e) =&gt; { e.preventDefault(); handleMove(e); });
+        window.addEventListener('touchend', handleEnd);
+        mainCanvas.addEventListener('touchend', (e) =&gt; {
+            if (e.changedTouches &amp;&amp; e.changedTouches.length &gt; 0) {
+                const touch = e.changedTouches[0];
+                handleClick({ clientX: touch.clientX, clientY: touch.clientY });
+            }
+        });
+
+        closeBtn.addEventListener('click', (e) =&gt; {
+            e.stopPropagation();
+            closeDetails();
+        });
+
+        window.addEventListener('resize', resize);
+
+        resize();
+        animate(0);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
